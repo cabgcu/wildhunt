@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Wild Hunt ARG</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background: url('https://i.imgur.com/MLu5UTX.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .login-container {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 2rem;
+      width: 340px;
+      text-align: center;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+    }
+    h1 {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      color: #ffffff;
+    }
+    input[type="text"] {
+      padding: 0.7rem;
+      width: 85%;
+      margin-bottom: 1rem;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-size: 1rem;
+      text-align: center;
+    }
+    input::placeholder {
+      color: #ccc;
+    }
+    button {
+      padding: 0.6rem 1.5rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: rgba(255, 255, 255, 0.35);
+    }
+    #error {
+      color: #ffdddd;
+      font-weight: bold;
+    }
+    .locked {
+      display: none;
+      margin-top: 2rem;
+      padding: 1rem;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+      color: #f0f0f0;
+      width: 90%;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    iframe {
+      margin-top: 1rem;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h1>Welcome to CabOS</h1>
+    <p>Enter your password to unlock</p>
+    <input type="text" id="password" placeholder="Password" />
+    <br />
+    <button onclick="checkPassword()">→</button>
+    <p id="error"></p>
+  </div>
+
+  <div id="stage1" class="locked">
+    <h2>Stage 1: The Beginning</h2>
+    <iframe height="315" src="https://www.youtube.com/embed/VIDEO_ID_1" frameborder="0" allowfullscreen></iframe>
+    <p>You’ve found the first clue. Look for the flyer near Esports.</p>
+    <br />
+    <button onclick="goBack()">Back to Login</button>
+  </div>
+
+  <div id="stage2" class="locked">
+    <h2>Stage 2: Esports Encounter</h2>
+    <iframe height="315" src="https://www.youtube.com/embed/VIDEO_ID_2" frameborder="0" allowfullscreen></iframe>
+    <p>A QR code leads you to the Theology Commons. Use the translation to find the next word.</p>
+    <br />
+    <button onclick="goBack()">Back to Login</button>
+  </div>
+
+  <div id="stage3" class="locked">
+    <h2>Stage 3: Tree of Clues</h2>
+    <iframe height="315" src="https://www.youtube.com/embed/VIDEO_ID_3" frameborder="0" allowfullscreen></iframe>
+    <p>Decode the Greek message. Search by the ASGCU Tree for the final key.</p>
+    <br />
+    <button onclick="goBack()">Back to Login</button>
+  </div>
+
+  <div id="stage4" class="locked">
+    <h2>The Cipher Stage</h2>
+    <p>Enter a message and a keyword to decode it using a basic substitution cipher.</p>
+    <label for="cipherKey">Keyword:</label><br>
+    <input type="text" id="cipherKey" placeholder="Enter keyword" /><br><br>
+    <label for="cipherInput">Encoded Message:</label><br>
+    <textarea id="cipherInput" rows="4" style="width: 90%;"></textarea><br><br>
+    <button onclick="decipherText()">Decode</button><br><br>
+    <label>Decoded Output:</label>
+    <div id="cipherOutput" style="margin-top:10px; font-weight:bold;"></div>
+    <hr style="margin:2rem 0;">
+    <h2>Final Stage: Unlock the Locker</h2>
+    <p>Use the three-digit combo. Look behind the Riverbed poster.</p>
+    <p><strong>Clue:</strong> 2nd floor vending machine reveals the last digit.</p>
+    <br />
+    <button onclick="goBack()">Back to Login</button>
+  </div>
+
+  <script>
+    const passwords = {
+      "grace": "stage1",
+      "esports": "stage2",
+      "limbo": "stage3",
+      "finalkey": "stage4"
+    };
+
+    function checkPassword() {
+      const input = document.getElementById("password").value.trim().toLowerCase();
+      document.getElementById("error").textContent = "";
+      document.querySelectorAll('.locked').forEach(el => el.style.display = 'none');
+
+      if (passwords[input]) {
+        document.querySelector('.login-container').style.display = 'none';
+        document.getElementById(passwords[input]).style.display = "block";
+      } else {
+        document.getElementById("error").textContent = "Incorrect password. Try again.";
+      }
+    }
+
+    function goBack() {
+      document.querySelectorAll('.locked').forEach(el => el.style.display = 'none');
+      document.querySelector('.login-container').style.display = 'block';
+      document.getElementById('password').value = '';
+    }
+
+    function decipherText() {
+      const key = document.getElementById('cipherKey').value.toLowerCase();
+      const input = document.getElementById('cipherInput').value;
+      let output = '';
+      if (!key) {
+        output = 'Please enter a keyword.';
+      } else {
+        let alpha = 'abcdefghijklmnopqrstuvwxyz';
+        let shifted = key + alpha.split('').filter(c => !key.includes(c)).join('');
+        const map = {};
+        for (let i = 0; i < 26; i++) {
+          map[shifted[i]] = alpha[i];
+        }
+        for (let char of input.toLowerCase()) {
+          if (map[char]) {
+            output += map[char];
+          } else {
+            output += char;
+          }
+        }
+      }
+      document.getElementById('cipherOutput').textContent = output;
+    }
+  </script>
+</body>
+</html>
