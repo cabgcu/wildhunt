@@ -2,140 +2,158 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Stage Login</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Wild Hunt ARG Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       margin: 0;
       height: 100vh;
-      background: url("https://i.imgur.com/KPuH1fc.jpeg") center/cover fixed;
-      font-family: Tahoma, sans-serif;
+      background: url("https://i.imgur.com/KPuH1fc.jpeg") center center fixed;
+      background-size: cover;
+      font-family: "MS Sans Serif", Tahoma, sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .hidden { display: none; }
-    .dialog-box {
+    .win-window {
       width: 360px;
-      background: #ece9d8;
-      border: 2px solid #000080;
-      box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+      background: #C0C0C0;
+      border: 2px solid #808080;
+      box-shadow: inset -1px -1px 0 #fff, inset 1px 1px 0 #000;
     }
-    .dialog-title-bar {
+    .title-bar {
       background: #000080;
-      color: white;
-      padding: 4px 8px;
+      color: #fff;
+      padding: 4px 6px;
       font-weight: bold;
-      font-size: 13px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .title-bar-text { flex-grow: 1; }
-    .red-x-btn {
-      width: 16px;
-      height: 16px;
-      background: #c00;
-      color: white;
+    .close-btn {
+      width: 18px;
+      height: 18px;
+      font-size: 14px;
       font-weight: bold;
-      font-size: 12px;
-      line-height: 16px;
+      color: #fff;
+      background: #800000;
+      border: 2px outset #C0C0C0;
       text-align: center;
+      line-height: 14px;
       cursor: pointer;
-      border: 1px solid #fff;
-      margin-left: 8px;
     }
-    .dialog-content {
-      padding: 16px;
-      font-size: 13px;
-      color: black;
-    }
-    label {
-      display: block;
-      margin-top: 8px;
-      font-weight: bold;
-    }
-    input {
+    .window-body { padding: 16px; }
+    input[type="text"], input[type="password"] {
       width: 100%;
       padding: 4px;
-      margin-top: 2px;
+      border: 2px solid #808080;
+      box-shadow: inset -1px -1px 0 #fff, inset 1px 1px 0 #000;
+      background: #fff;
       font-size: 13px;
-    }
-    .btn-row {
-      text-align: center;
-      margin-top: 16px;
     }
     button {
-      padding: 2px 20px;
+      margin-top: 10px;
+      padding: 2px 6px;
       font-size: 13px;
-      border: 1px solid #808080;
-      background-color: #ece9d8;
-      box-shadow: inset -1px -1px 0 #fff, inset 1px 1px 0 #000;
+      border: 2px solid #808080;
+      background: #C0C0C0;
       cursor: pointer;
     }
-    #error-msg {
-      font-size: 12px;
-      color: #800000;
-      margin-top: 8px;
-      text-align: center;
-    }
+    .hidden { display: none; }
+    #error-msg, #stage2-msg { font-size: 12px; color: #800000; margin-top: 6px; }
   </style>
 </head>
 <body>
-  <!-- LOGIN BOX -->
-  <div class="dialog-box" id="login-box">
-    <div class="dialog-title-bar">
-      <div class="title-bar-text">Welcome</div>
+  <div class="win-window">
+    <div class="title-bar">
+      <span id="title">Welcome User</span>
+      <div class="close-btn" onclick="goBackToLogin()">X</div>
     </div>
-    <div class="dialog-content">
-      <p><strong>Enter the Password</strong></p>
-      <label for="pw">Password</label>
-      <input type="password" id="pw" />
-      <div class="btn-row">
-        <button onclick="checkPassword()">Continue</button>
+    <div class="window-body">
+      <div id="login-pane">
+        <p>Enter Your Password</p>
+        <input type="password" id="pw" />
+        <button onclick="checkPassword()">OK</button>
+        <div id="error-msg"></div>
       </div>
-      <div id="error-msg"></div>
-    </div>
-  </div>
 
-  <!-- REGISTER BOX -->
-  <div class="dialog-box hidden" id="register-box">
-    <div class="dialog-title-bar">
-      <div class="title-bar-text">Welcome</div>
-      <div class="red-x-btn" onclick="goBackToLogin()">X</div>
-    </div>
-    <div class="dialog-content">
-      <p><strong>Welcome New User</strong></p>
-      <p>Doesn’t look like we’ve met before. Let’s get acquainted.</p>
-      <form method="POST" action="https://script.google.com/macros/s/AKfycbzze7kr5VUDsEbtnPtscgQI8P3kgxKOzoiLa-OXTC6v499GA_FKIwOWevFmROabtj8T/exec">
+      <div id="register-pane" class="hidden">
+        <p><strong>Welcome New User</strong><br>Doesn’t look like we’ve met before.<br>Let’s get acquainted.</p>
         <label>Student ID Number</label>
-        <input type="text" name="sid" required />
+        <input type="text" id="sid" /><br>
         <label>First Name</label>
-        <input type="text" name="fname" required />
-        <input type="hidden" name="stage" value="1" />
-        <div class="btn-row">
-          <button type="submit">OK</button>
-        </div>
-      </form>
+        <input type="text" id="fname" />
+        <button onclick="submitRegistration()">OK</button>
+        <div id="save-msg"></div>
+      </div>
+
+      <div id="stage1-pane" class="hidden">
+        <p><strong>Welcome to Stage One</strong></p>
+        <p style="font-size: 13px;">They brought something back from the canyon... and that was the last we saw of 20931722.<br>Find what hangs from the tree that gave Absalom no grace.</p>
+        <p><em id="user-info"></em></p>
+        <label>Enter the password to continue:</label>
+        <input type="password" id="stage2pass" />
+        <button onclick="checkStage2()">Continue</button>
+        <div id="stage2-msg"></div>
+      </div>
     </div>
   </div>
 
   <script>
+    const STAGE1_PASSWORD = "whiterabbit";
+    const STAGE2_PASSWORD = "stage2";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzze7kr5VUDsEbtnPtscgQI8P3kgxKOzoiLa-OXTC6v499GA_FKIwOWevFmROabtj8T/exec";
+
+    function goBackToLogin() {
+      document.getElementById('register-pane').classList.add('hidden');
+      document.getElementById('stage1-pane').classList.add('hidden');
+      document.getElementById('login-pane').classList.remove('hidden');
+      document.getElementById('title').textContent = 'Welcome User';
+    }
+
     function checkPassword() {
       const pw = document.getElementById('pw').value.trim().toLowerCase();
-      const err = document.getElementById('error-msg');
-      if (pw === 'whiterabbit') {
-        document.getElementById('login-box').classList.add('hidden');
-        document.getElementById('register-box').classList.remove('hidden');
-        err.textContent = '';
+      if (pw === STAGE1_PASSWORD) {
+        document.getElementById('login-pane').classList.add('hidden');
+        document.getElementById('register-pane').classList.remove('hidden');
+        document.getElementById('title').textContent = 'New User Registration';
       } else {
-        err.textContent = 'Incorrect password. Try again.';
+        document.getElementById('error-msg').textContent = "Incorrect password. Try again.";
       }
     }
 
-    function goBackToLogin() {
-      document.getElementById('register-box').classList.add('hidden');
-      document.getElementById('login-box').classList.remove('hidden');
+    function submitRegistration() {
+      const sid = document.getElementById("sid").value.trim();
+      const fname = document.getElementById("fname").value.trim();
+      if (!sid || !fname) {
+        document.getElementById("save-msg").textContent = "Both fields required.";
+        return;
+      }
+      const payload = new FormData();
+      payload.append("sid", sid);
+      payload.append("fname", fname);
+      payload.append("stage", "Stage 1");
+
+      fetch(SCRIPT_URL, { method: "POST", body: payload })
+        .then(res => res.text())
+        .then(() => {
+          document.getElementById("register-pane").classList.add("hidden");
+          document.getElementById("stage1-pane").classList.remove("hidden");
+          document.getElementById("title").textContent = "Stage 1";
+          document.getElementById("user-info").textContent = `User: ${fname} (${sid})`;
+        })
+        .catch(() => {
+          document.getElementById("save-msg").textContent = "Error saving progress.";
+        });
+    }
+
+    function checkStage2() {
+      const pw = document.getElementById("stage2pass").value.trim().toLowerCase();
+      if (pw === STAGE2_PASSWORD) {
+        document.getElementById("stage2-msg").textContent = "Stage 2 unlocked! (To be continued...)";
+      } else {
+        document.getElementById("stage2-msg").textContent = "Incorrect password.";
+      }
     }
   </script>
 </body>
