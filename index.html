@@ -3,32 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <title>Stage Login</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <style>
     body {
       margin: 0;
       height: 100vh;
-      background: url("https://i.imgur.com/KPuH1fc.jpeg") center center fixed;
-      background-size: cover;
-      font-family: "Tahoma", sans-serif;
+      background: url("https://i.imgur.com/KPuH1fc.jpeg") center/cover fixed;
+      font-family: Tahoma, sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-
-    .hidden {
-      display: none;
-    }
-
+    .hidden { display: none; }
     .dialog-box {
       width: 360px;
-      background-color: #ece9d8;
+      background: #ece9d8;
       border: 2px solid #000080;
       box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
     }
-
     .dialog-title-bar {
-      background-color: #000080;
+      background: #000080;
       color: white;
       padding: 4px 8px;
       font-weight: bold;
@@ -37,15 +31,11 @@
       justify-content: space-between;
       align-items: center;
     }
-
-    .title-bar-text {
-      flex-grow: 1;
-    }
-
+    .title-bar-text { flex-grow: 1; }
     .red-x-btn {
       width: 16px;
       height: 16px;
-      background-color: #c00;
+      background: #c00;
       color: white;
       font-weight: bold;
       font-size: 12px;
@@ -55,35 +45,26 @@
       border: 1px solid #fff;
       margin-left: 8px;
     }
-
     .dialog-content {
       padding: 16px;
       font-size: 13px;
       color: black;
     }
-
-    .dialog-content p {
-      margin: 0 0 12px;
-    }
-
     label {
       display: block;
       margin-top: 8px;
       font-weight: bold;
     }
-
     input {
       width: 100%;
       padding: 4px;
       margin-top: 2px;
       font-size: 13px;
     }
-
     .btn-row {
       text-align: center;
       margin-top: 16px;
     }
-
     button {
       padding: 2px 20px;
       font-size: 13px;
@@ -92,8 +73,7 @@
       box-shadow: inset -1px -1px 0 #fff, inset 1px 1px 0 #000;
       cursor: pointer;
     }
-
-    #error-msg, #save-msg {
+    #error-msg {
       font-size: 12px;
       color: #800000;
       margin-top: 8px;
@@ -102,8 +82,7 @@
   </style>
 </head>
 <body>
-
-  <!-- LOGIN SCREEN -->
+  <!-- LOGIN BOX -->
   <div class="dialog-box" id="login-box">
     <div class="dialog-title-bar">
       <div class="title-bar-text">Welcome</div>
@@ -119,7 +98,7 @@
     </div>
   </div>
 
-  <!-- REGISTER SCREEN -->
+  <!-- REGISTER BOX -->
   <div class="dialog-box hidden" id="register-box">
     <div class="dialog-title-bar">
       <div class="title-bar-text">Welcome</div>
@@ -128,77 +107,37 @@
     <div class="dialog-content">
       <p><strong>Welcome New User</strong></p>
       <p>Doesn’t look like we’ve met before. Let’s get acquainted.</p>
-
-      <label for="sid">Student ID Number</label>
-      <input type="text" id="sid" />
-
-      <label for="fname">First Name</label>
-      <input type="text" id="fname" />
-
-      <div class="btn-row">
-        <button onclick="saveProgress()">OK</button>
-      </div>
-      <div id="save-msg"></div>
+      <form method="POST" action="https://script.google.com/macros/s/AKfycbzze7kr5VUDsEbtnPtscgQI8P3kgxKOzoiLa-OXTC6v499GA_FKIwOWevFmROabtj8T/exec">
+        <label>Student ID Number</label>
+        <input type="text" name="sid" required />
+        <label>First Name</label>
+        <input type="text" name="fname" required />
+        <input type="hidden" name="stage" value="1" />
+        <div class="btn-row">
+          <button type="submit">OK</button>
+        </div>
+      </form>
     </div>
   </div>
 
   <script>
-    const CORRECT_PASSWORD = "whiterabbit";
-
     function checkPassword() {
-      const pw = document.getElementById("pw").value.trim().toLowerCase();
-      const errorMsg = document.getElementById("error-msg");
-
-      if (pw === CORRECT_PASSWORD) {
-        document.getElementById("login-box").classList.add("hidden");
-        document.getElementById("register-box").classList.remove("hidden");
-        errorMsg.textContent = "";
+      const pw = document.getElementById('pw').value.trim().toLowerCase();
+      const err = document.getElementById('error-msg');
+      if (pw === 'whiterabbit') {
+        document.getElementById('login-box').classList.add('hidden');
+        document.getElementById('register-box').classList.remove('hidden');
+        err.textContent = '';
       } else {
-        errorMsg.textContent = "Incorrect password. Try again.";
+        err.textContent = 'Incorrect password. Try again.';
       }
     }
 
     function goBackToLogin() {
-      document.getElementById("register-box").classList.add("hidden");
-      document.getElementById("login-box").classList.remove("hidden");
-    }
-
-    function saveProgress() {
-      const sid = document.getElementById("sid").value.trim();
-      const fname = document.getElementById("fname").value.trim();
-      const msg = document.getElementById("save-msg");
-
-      if (!sid || !fname) {
-        msg.textContent = "Please enter both fields.";
-        return;
-      }
-
-      msg.textContent = "Saving...";
-
-      fetch("https://script.google.com/macros/s/AKfycbwwdldl2DiEf8S-n7ePrkEaH8cTstgaFTz9wPbsjO0nB4UHO9LMX7XGtePQ0gh_1FJm/exec", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          stage: 1,
-          studentId: sid,
-          firstName: fname
-        })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === "success") {
-          msg.textContent = "Progress saved!";
-        } else {
-          msg.textContent = "Error: " + (data.message || "Unable to save.");
-        }
-      })
-      .catch((err) => {
-        msg.textContent = "Network error. Try again later.";
-        console.error("Fetch error:", err);
-      });
+      document.getElementById('register-box').classList.add('hidden');
+      document.getElementById('login-box').classList.remove('hidden');
     }
   </script>
 </body>
 </html>
+
