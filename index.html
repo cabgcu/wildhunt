@@ -177,8 +177,14 @@
 
       fetch("https://script.google.com/macros/s/AKfycbwKH1QFZB0PcOVpGYIAphpY5Lr1oQ8ve3kJZNZH7vXKStbU4_exnhJ8H1a9ikZhOmtd/exec", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ stage: 1, studentId: sid, firstName: fname })
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          stage: 1,
+          studentId: sid,
+          firstName: fname
+        })
       })
       .then(res => res.json())
       .then(data => {
