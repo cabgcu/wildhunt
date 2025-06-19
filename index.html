@@ -2,191 +2,196 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>Stage Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Wild Hunt ARG</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
     body {
       margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      background: url('https://i.imgur.com/MLu5UTX.jpeg') no-repeat center center fixed;
+      height: 100vh;
+      background: url("https://i.imgur.com/KPuH1fc.jpeg") center center fixed;
       background-size: cover;
+      font-family: "Tahoma", sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
     }
-    .login-container {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 2rem;
-      width: 340px;
-      text-align: center;
-      backdrop-filter: blur(20px);
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: #ffffff;
+
+    .hidden {
+      display: none;
     }
-    h1 {
-      font-size: 1.4rem;
-      margin-bottom: 1rem;
-      color: #ffffff;
+
+    .dialog-box {
+      width: 360px;
+      background-color: #ece9d8;
+      border: 2px solid #000080;
+      box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
     }
-    input[type="text"] {
-      padding: 0.7rem;
-      width: 85%;
-      margin-bottom: 1rem;
-      border: none;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.2);
-      color: #fff;
-      font-size: 1rem;
-      text-align: center;
-    }
-    input::placeholder {
-      color: #ccc;
-    }
-    button {
-      padding: 0.6rem 1.5rem;
-      font-size: 1rem;
-      border: none;
-      border-radius: 8px;
-      background-color: rgba(255, 255, 255, 0.2);
+
+    .dialog-title-bar {
+      background-color: #000080;
       color: white;
+      padding: 4px 8px;
+      font-weight: bold;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .title-bar-text {
+      flex-grow: 1;
+    }
+
+    .red-x-btn {
+      width: 16px;
+      height: 16px;
+      background-color: #c00;
+      color: white;
+      font-weight: bold;
+      font-size: 12px;
+      line-height: 16px;
+      text-align: center;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      border: 1px solid #fff;
+      margin-left: 8px;
     }
-    button:hover {
-      background-color: rgba(255, 255, 255, 0.35);
+
+    .dialog-content {
+      padding: 16px;
+      font-size: 13px;
+      color: black;
     }
-    #error {
-      color: #ffdddd;
+
+    .dialog-content p {
+      margin: 0 0 12px;
+    }
+
+    label {
+      display: block;
+      margin-top: 8px;
       font-weight: bold;
     }
-    .locked {
-      display: none;
-      margin-top: 2rem;
-      padding: 1rem;
-      border-radius: 10px;
-      background: rgba(0, 0, 0, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-      color: #f0f0f0;
-      width: 90%;
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    iframe {
-      margin-top: 1rem;
-      border-radius: 10px;
+
+    input {
       width: 100%;
-      max-width: 100%;
+      padding: 4px;
+      margin-top: 2px;
+      font-size: 13px;
+    }
+
+    .btn-row {
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    button {
+      padding: 2px 20px;
+      font-size: 13px;
+      border: 1px solid #808080;
+      background-color: #ece9d8;
+      box-shadow: inset -1px -1px 0 #fff, inset 1px 1px 0 #000;
+      cursor: pointer;
+    }
+
+    #error-msg, #save-msg {
+      font-size: 12px;
+      color: #800000;
+      margin-top: 8px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <div class="login-container">
-    <h1>Welcome to CabOS</h1>
-    <p>Enter your password to unlock</p>
-    <input type="text" id="password" placeholder="Password" />
-    <br />
-    <button onclick="checkPassword()">→</button>
-    <p id="error"></p>
+
+  <!-- LOGIN SCREEN -->
+  <div class="dialog-box" id="login-box">
+    <div class="dialog-title-bar">
+      <div class="title-bar-text">Welcome</div>
+    </div>
+    <div class="dialog-content">
+      <p><strong>Enter the Password</strong></p>
+      <label for="pw">Password</label>
+      <input type="password" id="pw" />
+      <div class="btn-row">
+        <button onclick="checkPassword()">Continue</button>
+      </div>
+      <div id="error-msg"></div>
+    </div>
   </div>
 
-  <div id="stage1" class="locked">
-    <h2>Stage 1: The Beginning</h2>
-    <iframe height="315" src="https://www.youtube.com/embed/VIDEO_ID_1" frameborder="0" allowfullscreen></iframe>
-    <p>You’ve found the first clue. Look for the flyer near Esports.</p>
-    <br />
-    <button onclick="goBack()">Back to Login</button>
-  </div>
+  <!-- REGISTER SCREEN -->
+  <div class="dialog-box hidden" id="register-box">
+    <div class="dialog-title-bar">
+      <div class="title-bar-text">Welcome</div>
+      <div class="red-x-btn" onclick="goBackToLogin()">X</div>
+    </div>
+    <div class="dialog-content">
+      <p><strong>Welcome New User</strong></p>
+      <p>Doesn’t look like we’ve met before. Let’s get acquainted.</p>
 
-  <div id="stage2" class="locked">
-    <h2>Stage 2: Esports Encounter</h2>
-    <iframe height="315" src="https://www.youtube.com/embed/VIDEO_ID_2" frameborder="0" allowfullscreen></iframe>
-    <p>A QR code leads you to the Theology Commons. Use the translation to find the next word.</p>
-    <br />
-    <button onclick="goBack()">Back to Login</button>
-  </div>
+      <label for="sid">Student ID Number</label>
+      <input type="text" id="sid" />
 
-  <div id="stage3" class="locked">
-    <h2>Stage 3: Tree of Clues</h2>
-    <iframe height="315" src="https://www.youtube.com/embed/VIDEO_ID_3" frameborder="0" allowfullscreen></iframe>
-    <p>Decode the Greek message. Search by the ASGCU Tree for the final key.</p>
-    <br />
-    <button onclick="goBack()">Back to Login</button>
-  </div>
+      <label for="fname">First Name</label>
+      <input type="text" id="fname" />
 
-  <div id="stage4" class="locked">
-    <h2>The Cipher Stage</h2>
-    <p>Enter a message and a keyword to decode it using a basic substitution cipher.</p>
-    <label for="cipherKey">Keyword:</label><br>
-    <input type="text" id="cipherKey" placeholder="Enter keyword" /><br><br>
-    <label for="cipherInput">Encoded Message:</label><br>
-    <textarea id="cipherInput" rows="4" style="width: 90%;"></textarea><br><br>
-    <button onclick="decipherText()">Decode</button><br><br>
-    <label>Decoded Output:</label>
-    <div id="cipherOutput" style="margin-top:10px; font-weight:bold;"></div>
-    <hr style="margin:2rem 0;">
-    <h2>Final Stage: Unlock the Locker</h2>
-    <p>Use the three-digit combo. Look behind the Riverbed poster.</p>
-    <p><strong>Clue:</strong> 2nd floor vending machine reveals the last digit.</p>
-    <br />
-    <button onclick="goBack()">Back to Login</button>
+      <div class="btn-row">
+        <button onclick="saveProgress()">OK</button>
+      </div>
+      <div id="save-msg"></div>
+    </div>
   </div>
 
   <script>
-    const passwords = {
-      "grace": "stage1",
-      "esports": "stage2",
-      "limbo": "stage3",
-      "finalkey": "stage4"
-    };
+    const CORRECT_PASSWORD = "whiterabbit";
 
     function checkPassword() {
-      const input = document.getElementById("password").value.trim().toLowerCase();
-      document.getElementById("error").textContent = "";
-      document.querySelectorAll('.locked').forEach(el => el.style.display = 'none');
+      const pw = document.getElementById("pw").value.trim().toLowerCase();
+      const errorMsg = document.getElementById("error-msg");
 
-      if (passwords[input]) {
-        document.querySelector('.login-container').style.display = 'none';
-        document.getElementById(passwords[input]).style.display = "block";
+      if (pw === CORRECT_PASSWORD) {
+        document.getElementById("login-box").classList.add("hidden");
+        document.getElementById("register-box").classList.remove("hidden");
+        errorMsg.textContent = "";
       } else {
-        document.getElementById("error").textContent = "Incorrect password. Try again.";
+        errorMsg.textContent = "Incorrect password. Try again.";
       }
     }
 
-    function goBack() {
-      document.querySelectorAll('.locked').forEach(el => el.style.display = 'none');
-      document.querySelector('.login-container').style.display = 'block';
-      document.getElementById('password').value = '';
+    function goBackToLogin() {
+      document.getElementById("register-box").classList.add("hidden");
+      document.getElementById("login-box").classList.remove("hidden");
     }
 
-    function decipherText() {
-      const key = document.getElementById('cipherKey').value.toLowerCase();
-      const input = document.getElementById('cipherInput').value;
-      let output = '';
-      if (!key) {
-        output = 'Please enter a keyword.';
-      } else {
-        let alpha = 'abcdefghijklmnopqrstuvwxyz';
-        let shifted = key + alpha.split('').filter(c => !key.includes(c)).join('');
-        const map = {};
-        for (let i = 0; i < 26; i++) {
-          map[shifted[i]] = alpha[i];
-        }
-        for (let char of input.toLowerCase()) {
-          if (map[char]) {
-            output += map[char];
-          } else {
-            output += char;
-          }
-        }
+    function saveProgress() {
+      const sid = document.getElementById("sid").value.trim();
+      const fname = document.getElementById("fname").value.trim();
+      const msg = document.getElementById("save-msg");
+
+      if (!sid || !fname) {
+        msg.textContent = "Please enter both fields.";
+        return;
       }
-      document.getElementById('cipherOutput').textContent = output;
+
+      msg.textContent = "Saving...";
+
+      fetch("https://script.google.com/macros/s/AKfycbwKH1QFZB0PcOVpGYIAphpY5Lr1oQ8ve3kJZNZH7vXKStbU4_exnhJ8H1a9ikZhOmtd/exec", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ stage: 1, studentId: sid, firstName: fname })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          msg.textContent = "Progress saved!";
+        } else {
+          msg.textContent = "Error: " + (data.message || "Unable to save.");
+        }
+      })
+      .catch((err) => {
+        msg.textContent = "Network error. Try again later.";
+        console.error("Fetch error:", err);
+      });
     }
   </script>
 </body>
