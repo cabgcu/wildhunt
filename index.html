@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Wild Hunt - ARG Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wild Hunt ARG</title>
   <style>
     body {
       margin: 0;
@@ -17,7 +17,7 @@
     }
 
     .win-window {
-      width: 360px;
+      width: 320px;
       background: #C0C0C0;
       border: 2px solid #808080;
       box-shadow: inset -1px -1px 0 #fff, inset 1px 1px 0 #000;
@@ -31,7 +31,6 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      user-select: none;
     }
 
     .title-bar-text {
@@ -49,7 +48,6 @@
       text-align: center;
       line-height: 14px;
       cursor: pointer;
-      padding: 0;
     }
 
     .window-body {
@@ -61,8 +59,7 @@
       font-size: 13px;
     }
 
-    input[type="password"],
-    input[type="text"] {
+    input[type="password"], input[type="text"] {
       width: 100%;
       padding: 4px;
       border: 2px solid #808080;
@@ -86,7 +83,7 @@
       cursor: pointer;
     }
 
-    #error-msg, #save-msg, #stage1-msg {
+    #error-msg, #save-msg, #returning-msg, #stage1-msg {
       color: #800000;
       height: 14px;
       font-size: 12px;
@@ -96,10 +93,11 @@
 <body>
   <div class="win-window">
     <div class="title-bar">
-      <div class="title-bar-text">Welcome User</div>
+      <div class="title-bar-text">Wild Hunt ARG</div>
       <div class="close-btn" onclick="returnToLogin()">X</div>
     </div>
     <div class="window-body">
+
       <div id="login-pane">
         <p>Enter Your Password</p>
         <label for="pw">Password</label>
@@ -107,7 +105,14 @@
         <div class="btn-row">
           <button class="action-btn" onclick="checkPassword()">OK</button>
         </div>
+        <p>or Resume Your Progress</p>
+        <label for="loginId">Student ID</label>
+        <input type="text" id="loginId" autocomplete="off" />
+        <div class="btn-row">
+          <button class="action-btn" onclick="resumeProgress()">Resume</button>
+        </div>
         <div id="error-msg"></div>
+        <div id="returning-msg"></div>
       </div>
 
       <div id="register-pane" style="display:none">
@@ -124,33 +129,33 @@
       </div>
 
       <div id="stage1-box" style="display:none">
-        <p><strong>Welcome to Stage One</strong></p>
-        <p>Your first challenge awaits. Solve this:</p>
-        <p><em>"I speak without a mouth and hear without ears. I have nobody, but I come alive with wind. What am I?"</em></p>
-        <label for="stage2pw">Enter next stage password</label>
-        <input type="password" id="stage2pw" autocomplete="off" />
+        <p><strong>Stage 1</strong></p>
+        <p>“I have keys but no locks. I have space but no room. You can enter but can’t go outside. What am I?”</p>
+        <label for="stage2pw">Answer</label>
+        <input type="text" id="stage2pw" autocomplete="off" />
         <div class="btn-row">
           <button class="action-btn" onclick="checkStage2Password()">Submit</button>
         </div>
         <div id="stage1-msg"></div>
       </div>
+
     </div>
   </div>
 
   <script>
     const STAGE1_PASSWORD = "whiterabbit";
-    const STAGE2_PASSWORD = "stage2";
+    const STAGE2_PASSWORD = "keyboard";
     const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbyV3iRpKNCbf9_2LFrPGeKDwdLtArgA9QRi6zOHNvorFdwETMpw6JO_hVmhdyphHcHv/exec";
 
     function checkPassword() {
-      const pw = document.getElementById("pw").value.trim();
-      const error = document.getElementById("error-msg");
-      if (pw.toLowerCase() === STAGE1_PASSWORD) {
+      const pw = document.getElementById("pw").value.trim().toLowerCase();
+      const err = document.getElementById("error-msg");
+      if (pw === STAGE1_PASSWORD) {
         document.getElementById("login-pane").style.display = "none";
         document.getElementById("register-pane").style.display = "block";
-        error.textContent = "";
+        err.textContent = "";
       } else {
-        error.textContent = "Incorrect password. Try again.";
+        err.textContent = "Incorrect password. Try again.";
       }
     }
 
@@ -158,38 +163,58 @@
       const sid = document.getElementById("sid").value.trim();
       const fname = document.getElementById("fname").value.trim();
       const msg = document.getElementById("save-msg");
-
-      if (!sid || !fname) {
-        msg.textContent = "All fields are required.";
-        return;
-      }
-
-      msg.textContent = "Saving...";
+      if (!sid || !fname) { msg.textContent = "All fields are required."; return; }
+      msg.textContent = "Saving…";
 
       fetch(ENDPOINT_URL, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ sid, fname, stage: "Stage 1" })
       })
-      .then(res => res.text())
-      .then(response => {
-        if (response === "Success") {
-          msg.textContent = "Saved! Proceeding to Stage 1...";
+      .then(r => r.text())
+      .then(t => {
+        if (t === "Success") {
           document.getElementById("register-pane").style.display = "none";
           document.getElementById("stage1-box").style.display = "block";
         } else {
           msg.textContent = "Error saving. Try again.";
         }
       })
-      .catch(() => {
-        msg.textContent = "Network error. Try again later.";
-      });
+      .catch(() => { msg.textContent = "Network error."; });
+    }
+
+    function resumeProgress() {
+      const sid = document.getElementById("loginId").value.trim();
+      const msg = document.getElementById("returning-msg");
+      if (!sid) { msg.textContent = "Student ID required."; return; }
+      msg.textContent = "Checking…";
+
+      fetch(ENDPOINT_URL + "?sid=" + encodeURIComponent(sid))
+        .then(r => r.json())
+        .then(data => {
+          if (data.status === "found") {
+            msg.textContent = "Welcome back, " + data.name + "!";
+            routeToStage(data.stage);
+          } else {
+            msg.textContent = "ID not found.";
+          }
+        })
+        .catch(() => { msg.textContent = "Network error."; });
+    }
+
+    function routeToStage(stage) {
+      document.getElementById("login-pane").style.display = "none";
+      document.getElementById("register-pane").style.display = "none";
+      document.getElementById("stage1-box").style.display = "none";
+      if (stage === "Stage 1") {
+        document.getElementById("stage1-box").style.display = "block";
+      }
     }
 
     function checkStage2Password() {
-      const pw = document.getElementById("stage2pw").value.trim();
+      const pw = document.getElementById("stage2pw").value.trim().toLowerCase();
       const msg = document.getElementById("stage1-msg");
-      if (pw.toLowerCase() === STAGE2_PASSWORD) {
+      if (pw === STAGE2_PASSWORD) {
         msg.textContent = "Correct. Stage 2 unlocked (coming soon).";
       } else {
         msg.textContent = "Wrong password. Try again.";
@@ -200,11 +225,8 @@
       document.getElementById("login-pane").style.display = "block";
       document.getElementById("register-pane").style.display = "none";
       document.getElementById("stage1-box").style.display = "none";
-      document.getElementById("error-msg").textContent = "";
-      document.getElementById("save-msg").textContent = "";
-      document.getElementById("stage1-msg").textContent = "";
+      ["error-msg", "save-msg", "stage1-msg", "returning-msg"].forEach(id => document.getElementById(id).textContent = "");
     }
   </script>
 </body>
 </html>
-
