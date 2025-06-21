@@ -60,8 +60,8 @@
                                         margin-left:2px;animation:blink 1s steps(2,start) infinite}
 
     /* ---------- Stage & completion overlays ---------- */
-    #stage-1-screen,#stage-3-password-screen,#stage-3-screen,
-    #stage-4-password-screen,#stage-4-screen,#completion-screen{
+    #stage-1-screen,#stage-2-password-screen,#stage-2-screen,
+    #stage-3-password-screen,#stage-3-screen,#completion-screen{
       display:none;position:absolute;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(20px);
       flex-direction:column;align-items:center;justify-content:center;text-align:center;
       padding:40px 20px;font-family:'Courier New',monospace
@@ -142,12 +142,34 @@
       If you’re reading this, you're already marked. Watch the tapes. Decode the signs.<br><br>
       The last footage ended at the Esports lounge. Go there... but tread carefully.
     </div>
+    <button class="next-button" onclick="showStage2Password()">Proceed to Stage 2</button>
+  </div>
+
+  <!-- Stage 2 password -->
+  <div id="stage-2-password-screen">
+    <div class="lore-box">Access to the Theology Commons archive requires the keyword.<br><br>Type the name of the one they spoke of most often.</div>
+    <div class="password-box"><input id="stage2Password" type="password" placeholder="Enter Password"></div>
+    <div class="prompt">Password required to access Stage 2</div>
+  </div>
+
+  <!-- Stage 2 -->
+  <div id="stage-2-screen">
+    <div class="video-wrapper">
+      <iframe src="https://www.youtube.com/embed/YOUR_STAGE2_VIDEO_ID?autoplay=1&controls=1"
+              title="Stage 2" allow="autoplay; encrypted-media" allowfullscreen style="width:100%;height:100%;border:none;"></iframe>
+    </div>
+    <div class="lore-box">
+      Theology Commons was supposed to be a safe place. But it echoed.<br><br>
+      The whisper said “Absalom was hung on one of these. There was no grace for him.”<br><br>
+      Something scratched Matthew’s name into the wood.<br>
+      Next clue leads to the old ASGCU tree, where fruit never grew.
+    </div>
     <button class="next-button" onclick="showStage3Password()">Proceed to Stage 3</button>
   </div>
 
   <!-- Stage 3 password -->
   <div id="stage-3-password-screen">
-    <div class="lore-box">Access to the Theology Commons archive requires the keyword.<br><br>Type the name of the one they spoke of most often.</div>
+    <div class="lore-box">Only those who carry Matthew's cipher may continue.<br><br>Decode or turn back.</div>
     <div class="password-box"><input id="stage3Password" type="password" placeholder="Enter Password"></div>
     <div class="prompt">Password required to access Stage 3</div>
   </div>
@@ -157,28 +179,6 @@
     <div class="video-wrapper">
       <iframe src="https://www.youtube.com/embed/YOUR_STAGE3_VIDEO_ID?autoplay=1&controls=1"
               title="Stage 3" allow="autoplay; encrypted-media" allowfullscreen style="width:100%;height:100%;border:none;"></iframe>
-    </div>
-    <div class="lore-box">
-      Theology Commons was supposed to be a safe place. But it echoed.<br><br>
-      The whisper said “Absalom was hung on one of these. There was no grace for him.”<br><br>
-      Something scratched Matthew’s name into the wood.<br>
-      Next clue leads to the old ASGCU tree, where fruit never grew.
-    </div>
-    <button class="next-button" onclick="showStage4Password()">Proceed to Stage 4</button>
-  </div>
-
-  <!-- Stage 4 password -->
-  <div id="stage-4-password-screen">
-    <div class="lore-box">Only those who carry Matthew's cipher may continue.<br><br>Decode or turn back.</div>
-    <div class="password-box"><input id="stage4Password" type="password" placeholder="Enter Password"></div>
-    <div class="prompt">Password required to access Stage 4</div>
-  </div>
-
-  <!-- Stage 4 -->
-  <div id="stage-4-screen">
-    <div class="video-wrapper">
-      <iframe src="https://www.youtube.com/embed/YOUR_STAGE4_VIDEO_ID?autoplay=1&controls=1"
-              title="Stage 4" allow="autoplay; encrypted-media" allowfullscreen style="width:100%;height:100%;border:none;"></iframe>
     </div>
     <div class="lore-box">
       The roots ran deep beneath the ASGCU tree. Someone left carvings.<br><br>
@@ -317,30 +317,30 @@ Outlast the Hunt.  Bring Matthew Stout home.
     }
 
     /* ---------- Stage navigation ---------- */
-    function showStage3Password(){
+    function showStage2Password(){
       document.getElementById('stage-1-screen').style.display='none';
+      document.getElementById('stage-2-password-screen').style.display='flex';
+      document.getElementById('stage2Password').focus();
+    }
+    function showStage3Password(){
+      document.getElementById('stage-2-screen').style.display='none';
       document.getElementById('stage-3-password-screen').style.display='flex';
       document.getElementById('stage3Password').focus();
     }
-    function showStage4Password(){
-      document.getElementById('stage-3-screen').style.display='none';
-      document.getElementById('stage-4-password-screen').style.display='flex';
-      document.getElementById('stage4Password').focus();
-    }
 
     /* ---------- Stage passwords ---------- */
+    document.getElementById('stage2Password').addEventListener('keypress',e=>{
+      if(e.key==='Enter'&&e.target.value.trim().toLowerCase()==='matthew'){
+        document.getElementById('stage-2-password-screen').style.display='none';
+        document.getElementById('stage-2-screen').style.display='flex';
+        injectPreChat(2);
+      }
+    });
     document.getElementById('stage3Password').addEventListener('keypress',e=>{
       if(e.key==='Enter'&&e.target.value.trim().toLowerCase()==='matthew'){
         document.getElementById('stage-3-password-screen').style.display='none';
         document.getElementById('stage-3-screen').style.display='flex';
         injectPreChat(3);
-      }
-    });
-    document.getElementById('stage4Password').addEventListener('keypress',e=>{
-      if(e.key==='Enter'&&e.target.value.trim().toLowerCase()==='matthew'){
-        document.getElementById('stage-4-password-screen').style.display='none';
-        document.getElementById('stage-4-screen').style.display='flex';
-        injectPreChat(4);
       }
     });
 
@@ -357,7 +357,7 @@ Outlast the Hunt.  Bring Matthew Stout home.
       if(decoded.trim().toLowerCase()==='matthew'){triggerCompletion();}
     });
     function triggerCompletion(){
-      document.getElementById('stage-4-screen').style.display='none';
+      document.getElementById('stage-3-screen').style.display='none';
       const screen=document.getElementById('completion-screen');
       const out=document.getElementById('completion-output');
       const cur=document.getElementById('completion-cursor');
@@ -449,9 +449,7 @@ But you did.
     }
 
     /* ---------- Chat UI control ---------- */
-    function showChatControls(){
-      chatToggle.style.display='flex';
-    }
+    function showChatControls(){chatToggle.style.display='flex';}
     chatToggle.addEventListener('click',()=>{chatWindow.style.display=chatWindow.style.display==='flex'?'none':'flex';});
 
     /* ---------- Local chat (demo) ---------- */
@@ -469,11 +467,11 @@ But you did.
           {n:"Riley",t:"Intro video cuts off right at the scream."},
           {n:"Jordan",t:"Anyone brave enough to check Esports tonight?"}
         ],
-        3:[
+        2:[
           {n:"Morgan",t:"Theology Commons door was unlocked but lights were flickering."},
           {n:"Avery",t:"Found MATTHEW carved under the desk."}
         ],
-        4:[
+        3:[
           {n:"Parker",t:"Tree carvings look like numbers… anyone decode?"},
           {n:"Sky",t:"Decoding now… almost there!"}
         ]
