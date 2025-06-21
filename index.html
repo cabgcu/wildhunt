@@ -1,280 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Wild Hunt ARG</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    /* ---------- Base layout ---------- */
-    *{margin:0;padding:0;box-sizing:border-box}
-    html,body{
-      height:100%;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-      color:#fff;
-      overflow:hidden;
-      animation:fadeIn 1.5s ease forwards;
-    }
-    body{
-      background:url('https://i.imgur.com/RwTCX5k.jpeg') center/cover no-repeat fixed;
-      display:flex;flex-direction:column;justify-content:space-between;text-align:center;
-    }
+<meta charset="UTF-8" />
+<title>Wild Hunt ARG</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{
+  height:100%;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:url('https://i.imgur.com/y1E4ys7.jpeg') center/cover no-repeat fixed;
+  color:#fff;overflow:hidden;animation:fadeIn 1.2s ease forwards;
+}
+@keyframes fadeIn{to{opacity:1}}  @keyframes blink{to{visibility:hidden}}
 
-    /* ---------- Clock ---------- */
-    .header{margin-top:80px}
-    #date{font-size:22px;font-weight:300;color:#f0f0f0;text-shadow:0 0 6px rgba(0,0,0,.5)}
-    #time{font-size:110px;font-weight:600;color:#fff;text-shadow:0 0 20px rgba(0,0,0,.7);margin-top:10px}
+header{text-align:center;margin-top:60px}
+#date{font-size:22px;font-weight:300;text-shadow:0 0 6px #0008}
+#time{font-size:110px;font-weight:600;text-shadow:0 0 20px #000b;margin-top:10px}
+#logo{width:300px;margin:25px auto 0;display:block;opacity:.95}
 
-    /* ---------- Login ---------- */
-    .login-container{display:flex;flex-direction:column;align-items:center;margin-bottom:80px}
-    .password-box{background:rgba(255,255,255,.2);border-radius:20px;padding:10px 20px;
-                  border:1px solid rgba(255,255,255,.3);min-width:280px;margin-bottom:12px}
-    input{background:transparent;border:none;outline:none;font-size:16px;width:100%;color:#fff;text-align:center}
-    .prompt{font-size:14px;color:#aaa;text-shadow:0 0 5px rgba(0,0,0,.4)}
+.login-container{display:flex;flex-direction:column;align-items:center;margin:40px 0 80px}
+.password-box{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);
+              border-radius:20px;padding:10px 20px;min-width:280px;margin-bottom:12px}
+input{background:transparent;border:none;outline:none;font-size:16px;width:100%;color:#fff;text-align:center}
+input::placeholder{color:#fff}.prompt{font-size:14px;color:#fff;text-shadow:0 0 5px #0006}
 
-    /* ---------- Account screen ---------- */
-    #account-screen{position:absolute;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(25px);
-                    display:none;flex-direction:column;justify-content:center;align-items:center}
-    .account-container{background:rgba(255,255,255,.12);backdrop-filter:blur(25px);border-radius:12px;
-                       padding:40px;width:90%;max-width:480px;color:#fff;box-shadow:0 0 30px rgba(0,0,0,.3)}
-    .account-container img{max-width:180px;margin-bottom:20px;opacity:.92}
-    .account-container h2{font-size:26px;margin-bottom:8px}
-    .account-container p{font-size:14px;margin-bottom:20px;color:#ddd}
-    .field{text-align:left;margin-bottom:16px}
-    .field label{display:block;font-size:14px;margin-bottom:6px}
-    .field input{background:rgba(255,255,255,0.08);border:none;border-radius:6px;padding:10px;
-                 color:#fff;font-size:15px;width:100%}
-    .buttons{display:flex;justify-content:space-between;margin-top:20px}
-    button{padding:10px 20px;font-size:15px;border:none;border-radius:5px;cursor:pointer}
-    .back{background:#999}.continue{background:#007aff;color:#fff}
-    .back:hover{background:#777}.continue:hover{background:#005ecc}
+#account-screen{position:absolute;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(25px);
+                display:none;align-items:center;justify-content:center;flex-direction:column}
+.account-container{background:rgba(255,255,255,.12);backdrop-filter:blur(25px);border-radius:12px;
+                   padding:40px;width:90%;max-width:480px;text-align:center;box-shadow:0 0 30px #0008}
+.account-container img{max-width:180px;margin-bottom:24px;opacity:.92}
+.account-container h2{margin-bottom:12px}
+.account-container p{margin-bottom:28px;font-size:15px;opacity:.85}
+.field{margin-bottom:20px;text-align:left}
+.field label{font-size:14px;margin-bottom:8px;display:block}
+.field input{background:rgba(255,255,255,.08);border:none;border-radius:6px;padding:10px;color:#fff;width:100%}
+.buttons{display:flex;justify-content:space-between;margin-top:20px}
+button{padding:10px 20px;font-size:15px;border:none;border-radius:5px;cursor:pointer}
+.back{background:#999}.continue{background:#007aff;color:#fff}.back:hover{background:#777}.continue:hover{background:#005ecc}
 
-    /* ---------- Glitch & terminal ---------- */
-    #glitch-screen{display:none;position:fixed;inset:0;z-index:10000;background:#000;
-                   background-image:repeating-linear-gradient(0deg,#000 0 2px,#111 2px 4px);
-                   animation:glitchPulse .8s ease-in-out forwards}
-    #terminal-screen{display:none;position:fixed;inset:0;background:#000;color:#fff;
-                     font-family:'Courier New',monospace;padding:40px;text-align:left;z-index:9999}
-    #terminal-output-wrapper{font-size:20px;white-space:pre-wrap;display:inline}
-    #terminal-output{display:inline}
-    #terminal-cursor,#completion-cursor{display:inline-block;width:10px;height:20px;background:#fff;
-                                        margin-left:2px;animation:blink 1s steps(2,start) infinite}
+#glitch-screen{position:fixed;inset:0;display:none;z-index:10000;background:#000;pointer-events:none;overflow:hidden}
+.glitch-line{position:absolute;left:0;width:100%;height:2px;opacity:.1;animation:glitchMove .35s infinite ease-in-out}
+@keyframes glitchMove{
+  0%{transform:translateX(0);opacity:.05}
+  50%{transform:translateX(40px);opacity:.35}
+  100%{transform:translateX(-40px);opacity:.05}
+}
+@keyframes glitchPulse{
+  0%,100%{opacity:.15}20%,50%,70%{opacity:1}40%,60%,80%{opacity:.25}
+}
 
-    /* ---------- Stage & completion overlays ---------- */
-    #stage-1-screen,#stage-2-password-screen,#stage-2-screen,
-    #stage-3-password-screen,#stage-3-screen,#completion-screen{
-      display:none;position:absolute;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(20px);
-      flex-direction:column;align-items:center;justify-content:center;text-align:center;
-      padding:40px 20px;font-family:'Courier New',monospace
-    }
-    #completion-screen{overflow-y:auto}
+#terminal-screen{position:fixed;inset:0;display:none;z-index:9999;background:#000;
+                 font-family:'Courier New',monospace;color:#fff;padding:40px;text-align:left}
+#terminal-output-wrapper{font-size:20px;white-space:pre-wrap;display:inline}
+#terminal-output{display:inline}
+#terminal-cursor{display:inline-block;width:10px;height:20px;background:#fff;margin-left:2px;animation:blink 1s steps(2,start) infinite}
 
-    .video-wrapper{width:100%;max-width:720px;aspect-ratio:16/9;border-radius:12px;overflow:hidden;
-                   box-shadow:0 0 30px rgba(0,0,0,.5);margin-bottom:30px}
-    .lore-box{background:rgba(255,255,255,.08);backdrop-filter:blur(20px);padding:20px;border-radius:12px;
-              max-width:700px;font-size:16px;line-height:1.6;box-shadow:0 0 10px rgba(0,0,0,.4);margin-bottom:30px}
-    .next-button{padding:12px 24px;font-size:16px;border:2px solid #fff;background:transparent;color:#fff;
-                 cursor:pointer;border-radius:6px;font-family:'Courier New',monospace}
-    .next-button:hover{background:#222}
+#stage-1-screen,#stage-2-password-screen,#stage-2-screen,
+#stage-3-password-screen,#stage-3-screen,#completion-screen{
+  display:none;position:absolute;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(20px);
+  align-items:center;justify-content:center;flex-direction:column;padding:40px 20px;font-family:'Courier New',monospace
+}
+.video-wrapper{width:100%;max-width:720px;aspect-ratio:16/9;border-radius:12px;overflow:hidden;
+               box-shadow:0 0 30px rgba(0,0,0,.5);margin-bottom:30px}
+.lore-box{background:rgba(255,255,255,.08);backdrop-filter:blur(20px);padding:20px;border-radius:12px;
+          max-width:700px;font-size:16px;line-height:1.6;box-shadow:0 0 10px rgba(0,0,0,.4);margin-bottom:30px}
+.next-button{padding:12px 24px;font-size:16px;border:2px solid #fff;background:transparent;color:#fff;cursor:pointer;border-radius:6px;font-family:'Courier New',monospace}
+.next-button:hover{background:#222}
+#completion-screen{overflow-y:auto}
+#completion-cursor{animation:blink 1s steps(2,start) infinite}
+#completion-output-wrapper{font-size:20px;white-space:pre-wrap;display:inline}
 
-    @keyframes blink{to{visibility:hidden}}
-    @keyframes fadeIn{to{opacity:1}}
-    @keyframes glitchPulse{0%,100%{opacity:0}10%,30%,50%{opacity:1}20%,40%,60%{opacity:0}}
-
-    #completion-output-wrapper{font-size:20px;white-space:pre-wrap;display:inline}
-
-    /* ---------- Chat popup ---------- */
-    #chat-toggle{
-      position:fixed;bottom:20px;right:20px;width:60px;height:60px;border-radius:50%;
-      background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);
-      display:none;align-items:center;justify-content:center;cursor:pointer;
-      backdrop-filter:blur(10px);z-index:11000;font-size:24px
-    }
-    #chat-toggle:hover{background:rgba(255,255,255,.3)}
-    #chat-window{
-      position:fixed;bottom:90px;right:20px;width:300px;max-height:400px;display:none;
-      flex-direction:column;background:rgba(0,0,0,.7);backdrop-filter:blur(15px);
-      border:1px solid rgba(255,255,255,.25);border-radius:12px;overflow:hidden;z-index:11000
-    }
-    #chat-header{padding:10px;font-weight:600;border-bottom:1px solid rgba(255,255,255,.2);text-align:left}
-    #chat-messages{flex:1;overflow-y:auto;padding:10px;font-size:14px}
-    .message{margin-bottom:8px}
-    .message span{font-weight:600;color:#7ecfff}
-    #chat-input-area{display:flex;border-top:1px solid rgba(255,255,255,.2)}
-    #chat-input{flex:1;background:transparent;border:none;padding:10px;color:#fff;font-size:14px}
-    #chat-send{background:transparent;border:none;color:#fff;padding:0 15px;cursor:pointer;font-size:16px}
-    #chat-send:hover{color:#7ecfff}
-  </style>
+#chat-toggle{position:fixed;bottom:20px;right:20px;width:60px;height:60px;border-radius:50%;
+  background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);display:none;align-items:center;justify-content:center;
+  cursor:pointer;backdrop-filter:blur(10px);z-index:11000;font-size:24px}
+#chat-window{position:fixed;bottom:90px;right:20px;width:300px;max-height:400px;display:none;flex-direction:column;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,.25);border-radius:12px;overflow:hidden;z-index:11000}
+#chat-header{padding:10px;font-weight:600;border-bottom:1px solid rgba(255,255,255,.2);text-align:left}
+#chat-messages{flex:1;overflow-y:auto;padding:10px;font-size:14px}.message{margin-bottom:8px}.message span{font-weight:600;color:#7ecfff}
+#chat-input-area{display:flex;border-top:1px solid rgba(255,255,255,.2)}
+#chat-input{flex:1;background:transparent;border:none;padding:10px;color:#fff;font-size:14px}
+#chat-send{background:transparent;border:none;color:#fff;padding:0 15px;cursor:pointer;font-size:16px}#chat-send:hover{color:#7ecfff}
+</style>
 </head>
 <body>
-  <!-- Clock -->
-  <div class="header" id="header"><div id="date"></div><div id="time"></div></div>
-
-  <!-- Login -->
-  <div class="login-container" id="login-container">
-    <div class="password-box"><input id="passwordInput" type="password" placeholder="Enter Password"></div>
-    <div class="prompt">Enter Password or Login Here</div>
+<header id="header"><div id="date"></div><div id="time"></div><img id="logo" src="https://i.imgur.com/4f3ODs7.png" alt="CAB Logo"></header>
+<div class="login-container" id="login-container">
+  <div class="password-box"><input id="passwordInput" type="password" placeholder="Enter Password"></div>
+  <div class="prompt">Enter Password or Login Here</div>
+</div>
+<div id="account-screen">
+  <div class="account-container">
+    <img src="https://i.imgur.com/7mXxwRm.png" alt="CAB Logo">
+    <h2>Create a Student Account</h2>
+    <p>Fill out the form below to create your student account.</p>
+    <div class="field"><label>Full Name:</label><input id="fullName" type="text" placeholder="e.g., Matthew Stout"></div>
+    <div class="field"><label>Student ID Number:</label><input id="studentId" type="text" placeholder="e.g., 123456789"></div>
+    <div class="buttons"><button class="back" onclick="goBack()">Back</button><button class="continue" onclick="handleAccountContinue()">Continue</button></div>
   </div>
-
-  <!-- Account creation -->
-  <div id="account-screen">
-    <div class="account-container">
-      <img src="https://i.imgur.com/7mXxwRm.png" alt="CAB Logo">
-      <h2>Create a Student Account</h2>
-      <p>Fill out the form below to create your student account.</p>
-      <div class="field"><label>Full Name:</label><input id="fullName" type="text" placeholder="e.g., Matthew Stout"></div>
-      <div class="field"><label>Student ID Number:</label><input id="studentId" type="text" placeholder="e.g., 123456789"></div>
-      <div class="buttons"><button class="back" onclick="goBack()">Back</button><button class="continue" onclick="handleAccountContinue()">Continue</button></div>
-    </div>
+</div>
+<div id="glitch-screen"></div>
+<div id="terminal-screen"><div id="terminal-output-wrapper"><span id="terminal-output"></span><span id="terminal-cursor"></span></div></div>
+<div id="stage-1-screen">
+  <div class="video-wrapper"><iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&controls=1&modestbranding=1" allow="autoplay; encrypted-media" allowfullscreen style="width:100%;height:100%;border:none;"></iframe></div>
+  <div class="lore-box">
+    They joked the skull was cursed. Then one by one, their voices stopped answering.<br><br>
+    If you’re reading this, you're already marked. Watch the tapes. Decode the signs.<br><br>
+    The last footage ended at the Esports lounge. Go there... but tread carefully.
   </div>
-
-  <!-- Effects & terminal -->
-  <div id="glitch-screen"></div>
-  <div id="terminal-screen"><div id="terminal-output-wrapper"><span id="terminal-output"></span><span id="terminal-cursor"></span></div></div>
-
-  <!-- Stage 1 -->
-  <div id="stage-1-screen">
-    <div class="video-wrapper">
-      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&controls=1&modestbranding=1"
-              title="Intro Video" allow="autoplay; encrypted-media" allowfullscreen style="width:100%;height:100%;border:none;"></iframe>
-    </div>
-    <div class="lore-box">
-      They joked the skull was cursed. Then one by one, their voices stopped answering.<br><br>
-      If you’re reading this, you're already marked. Watch the tapes. Decode the signs.<br><br>
-      The last footage ended at the Esports lounge. Go there... but tread carefully.
-    </div>
-    <button class="next-button" onclick="showStage2Password()">Proceed to Stage 2</button>
+  <button class="next-button" onclick="showStage2Password()">Proceed to Stage 2</button>
+</div>
+<div id="stage-2-password-screen">
+  <div class="lore-box">Access to the Theology Commons archive requires the keyword.<br><br>Type the name of the one they spoke of most often.</div>
+  <div class="password-box"><input id="stage2Password" type="password" placeholder="Enter Password"></div>
+  <div class="prompt">Password required to access Stage 2</div>
+</div>
+<div id="stage-2-screen">
+  <div class="video-wrapper"><iframe src="https://www.youtube.com/embed/YOUR_STAGE2_VIDEO_ID?autoplay=1&controls=1"
+      allow="autoplay; encrypted-media" allowfullscreen style="width:100%;height:100%;border:none;"></iframe></div>
+  <div class="lore-box">
+    Theology Commons was supposed to be a safe place. But it echoed.<br><br>
+    The whisper said “Absalom was hung on one of these. There was no grace for him.”<br><br>
+    Something scratched Matthew’s name into the wood.<br>
+    Next clue leads to the old ASGCU tree, where fruit never grew.
   </div>
-
-  <!-- Stage 2 password -->
-  <div id="stage-2-password-screen">
-    <div class="lore-box">Access to the Theology Commons archive requires the keyword.<br><br>Type the name of the one they spoke of most often.</div>
-    <div class="password-box"><input id="stage2Password" type="password" placeholder="Enter Password"></div>
-    <div class="prompt">Password required to access Stage 2</div>
+  <button class="next-button" onclick="showStage3Password()">Proceed to Stage 3</button>
+</div>
+<div id="stage-3-password-screen">
+  <div class="lore-box">Only those who carry Matthew's cipher may continue.<br><br>Decode or turn back.</div>
+  <div class="password-box"><input id="stage3Password" type="password" placeholder="Enter Password"></div>
+  <div class="prompt">Password required to access Stage 3</div>
+</div>
+<div id="stage-3-screen">
+  <div class="video-wrapper"><iframe src="https://www.youtube.com/embed/YOUR_STAGE3_VIDEO_ID?autoplay=1&controls=1"
+      allow="autoplay; encrypted-media" allowfullscreen style="width:100%;height:100%;border:none;"></iframe></div>
+  <div class="lore-box">
+    The roots ran deep beneath the ASGCU tree. Someone left carvings.<br><br>
+    This was the last place we picked up Matthew’s voice.<br>
+    It’s scrambled now. Use his cipher to decode.
   </div>
+  <div class="field"><label>Ciphered Message:</label><input id="cipherInput" type="text" placeholder="e.g., nvwnpgqq irlr ds tbkcfwm"></div>
+  <div class="field"><label>Decoded Result:</label><input id="cipherOutput" type="text" readonly></div>
+</div>
+<div id="completion-screen"><div id="completion-output-wrapper"><span id="completion-output"></span><span id="completion-cursor"></span></div></div>
+<div id="chat-toggle">💬</div>
+<div id="chat-window"><div id="chat-header">Wild Hunt Chat</div><div id="chat-messages"></div><div id="chat-input-area"><input id="chat-input" type="text" placeholder="Type a message…"><button id="chat-send">⏎</button></div></div>
+<script>
+// Time & Date
+function updateTime(){const d=new Date(),h=d.getHours()%12||12,m=d.getMinutes().toString().padStart(2,'0');
+  document.getElementById('time').textContent=`${h}:${m}`;
+  document.getElementById('date').textContent=d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});}
+updateTime();setInterval(updateTime,1000);
 
-  <!-- Stage 2 -->
-  <div id="stage-2-screen">
-    <div class="video-wrapper">
-      <iframe src="https://www.youtube.com/embed/YOUR_STAGE2_VIDEO_ID?autoplay=1&controls=1"
-              title="Stage 2" allow="autoplay; encrypted-media" allowfullscreen style="width:100%;height:100%;border:none;"></iframe>
-    </div>
-    <div class="lore-box">
-      Theology Commons was supposed to be a safe place. But it echoed.<br><br>
-      The whisper said “Absalom was hung on one of these. There was no grace for him.”<br><br>
-      Something scratched Matthew’s name into the wood.<br>
-      Next clue leads to the old ASGCU tree, where fruit never grew.
-    </div>
-    <button class="next-button" onclick="showStage3Password()">Proceed to Stage 3</button>
-  </div>
+// Variables
+const login=document.getElementById('login-container'),account=document.getElementById('account-screen'),
+      glitch=document.getElementById('glitch-screen'),terminal=document.getElementById('terminal-screen'),
+      out=document.getElementById('terminal-output'),cur=document.getElementById('terminal-cursor'),
+      wrap=document.getElementById('terminal-output-wrapper'),chatT=document.getElementById('chat-toggle'),
+      chatW=document.getElementById('chat-window'),chatM=document.getElementById('chat-messages'),
+      chatI=document.getElementById('chat-input'),chatS=document.getElementById('chat-send');
+let player='Player',loadedStage=new Set();
 
-  <!-- Stage 3 password -->
-  <div id="stage-3-password-screen">
-    <div class="lore-box">Only those who carry Matthew's cipher may continue.<br><br>Decode or turn back.</div>
-    <div class="password-box"><input id="stage3Password" type="password" placeholder="Enter Password"></div>
-    <div class="prompt">Password required to access Stage 3</div>
-  </div>
+// Auth flow
+document.getElementById('passwordInput').addEventListener('keypress',e=>{
+  if(e.key==='Enter'){e.target.value.trim().toLowerCase()==='matthew'? (login.style.display='none',account.style.display='flex'):e.target.select();}});
+function goBack(){account.style.display='none';login.style.display='flex'}
+function handleAccountContinue(){
+  const n=document.getElementById('fullName').value.trim();if(!n){alert('Name?');return;}
+  player=n.split(' ')[0];account.style.display='none';document.getElementById('header').style.display='none';login.style.display='none';
+  showGlitchEffect(startTerminal);
+}
 
-  <!-- Stage 3 -->
-  <div id="stage-3-screen">
-    <div class="video-wrapper">
-      <iframe src="https://www.youtube.com/embed/YOUR_STAGE3_VIDEO_ID?autoplay=1&controls=1"
-              title="Stage 3" allow="autoplay; encrypted-media" allowfullscreen style="width:100%;height:100%;border:none;"></iframe>
-    </div>
-    <div class="lore-box">
-      The roots ran deep beneath the ASGCU tree. Someone left carvings.<br><br>
-      This was the last place we picked up Matthew’s voice.<br>
-      It’s scrambled now. Use his cipher to decode.
-    </div>
-    <div class="field"><label>Ciphered Message:</label><input id="cipherInput" type="text" placeholder="e.g., nvwnpgqq irlr ds tbkcfwm"></div>
-    <div class="field"><label>Decoded Result:</label><input id="cipherOutput" type="text" readonly></div>
-  </div>
-
-  <!-- Completion -->
-  <div id="completion-screen">
-    <div id="completion-output-wrapper"><span id="completion-output"></span><span id="completion-cursor"></span></div>
-  </div>
-
-  <!-- Chat toggle & window -->
-  <div id="chat-toggle">💬</div>
-  <div id="chat-window">
-    <div id="chat-header">Wild Hunt Chat</div>
-    <div id="chat-messages"></div>
-    <div id="chat-input-area">
-      <input id="chat-input" type="text" placeholder="Type a message…">
-      <button id="chat-send">⏎</button>
-    </div>
-  </div>
-
-  <!-- Core script -->
-  <script>
-    /* ---------- Clock ---------- */
-    function updateTime(){
-      const now=new Date();
-      const hour12=now.getHours()%12||12;
-      const minutes=now.getMinutes().toString().padStart(2,'0');
-      document.getElementById('time').textContent=`${hour12}:${minutes}`;
-      document.getElementById('date').textContent=now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
-    }
-    updateTime();setInterval(updateTime,1000);
-
-    /* ---------- Globals ---------- */
-    const loginContainer=document.getElementById('login-container');
-    const accountScreen=document.getElementById('account-screen');
-    const glitchScreen=document.getElementById('glitch-screen');
-    const terminalScreen=document.getElementById('terminal-screen');
-    const terminalOutput=document.getElementById('terminal-output');
-    const terminalCursor=document.getElementById('terminal-cursor');
-    const tWrapper=document.getElementById('terminal-output-wrapper');
-    const header=document.getElementById('header');
-    const chatToggle=document.getElementById('chat-toggle');
-    const chatWindow=document.getElementById('chat-window');
-    const messagesDiv=document.getElementById("chat-messages");
-    const chatInput=document.getElementById("chat-input");
-    const chatSend=document.getElementById("chat-send");
-
-    let playerFirstName='Player';
-    const injectedStages=new Set();
-
-    /* ---------- Login flow ---------- */
-    document.getElementById('passwordInput').addEventListener('keypress',e=>{
-      if(e.key==='Enter'){
-        if(e.target.value.trim().toLowerCase()==='matthew'){
-          loginContainer.style.display='none';
-          accountScreen.style.display='flex';
-        }else{e.target.select();}
-      }
-    });
-    function goBack(){
-      accountScreen.style.display='none';
-      loginContainer.style.display='flex';
-      document.getElementById('passwordInput').focus();
-    }
-    function handleAccountContinue(){
-      const name=document.getElementById('fullName').value.trim();
-      if(!name){alert('Please enter your full name.');return;}
-      playerFirstName=name.split(' ')[0]||name;
-      document.body.style.background='#000';
-      header.style.display='none';
-      loginContainer.style.display='none';
-      accountScreen.style.display='none';
-      glitchScreen.style.display='block';
-      setTimeout(()=>{glitchScreen.style.display='none';typeTerminalStory(name);},800);
-    }
-
-    /* ---------- Terminal typewriter ---------- */
-    function typeTerminalStory(playerName){
-      const storyLines=
-`\nHello, ${playerName}.
+// Glitch + Terminal
+function showGlitchEffect(cb){
+  glitch.innerHTML='';for(let i=0;i<70;i++){const l=document.createElement('div');l.className='glitch-line';
+  l.style.top=Math.random()*100+'%';l.style.animationDuration=(Math.random()*0.6+0.2)+'s';
+  l.style.background=`rgba(${~~(Math.random()*255)},${~~(Math.random()*255)},${~~(Math.random()*255)},.3)`;glitch.appendChild(l);}
+  glitch.style.display='block';glitch.style.animation='glitchPulse 1s';
+  setTimeout(()=>{glitch.style.display='none';cb&&cb();},1000);
+}
+function startTerminal(){
+  terminal.style.display='block';out.textContent='';
+  const text=
+`\nHello, ${player}.
 You have accessed the emergency log of Matthew Stout.
 
   ▸  13 days ago, Matt and four friends hiked the south rim of the Grand Canyon.
-  ▸  They found an antelope skull.  Someone joked it “looked cursed.”
-  ▸  That night the first student vanished.  Then the second.  No footprints. No struggle.
+  ▸  They found an antelope skull. Someone joked it “looked cursed.”
+  ▸  That night the first student vanished. Then the second. No footprints. No struggle.
 
 I started filming everything—hoping the camera might catch
-whatever stalks us.  The tapes show shapes in the dark… and our failed escapes.
+whatever stalks us. The tapes show shapes in the dark… and our failed escapes.
 
-  ▸  We call it **The Wild Hunt**.  Once it marks you, you run—or you hang…
+  ▸  We call it **The Wild Hunt**. Once it marks you, you run—or you hang…
      “Absalom was hung on one of these—there was no grace for him.”
 
 Last recording from the dorm basement ended with Matt yelling:
@@ -284,85 +202,39 @@ Only clues remain—scratched on walls, hidden in videos, carved into desks.
 Find them, survive longer than we did, and maybe pull Matt back
 from that back-rooms campus the Hunt uses as a cage.
 
-STAMPEDE VENDING NOTE: someone said a *new flavor* is hidden
+STAMPEDE VENDING NOTE – someone said a *new flavor* is hidden
 down there—maybe it lures students in.
 
-Two fruits of the Spirit are missing here.  WHERE ARE THEY?
+Two fruits of the Spirit are missing here. WHERE ARE THEY?
 
 If you can read this, join the search party.
-Outlast the Hunt.  Bring Matthew Stout home.
-`;
-      terminalOutput.textContent='';
-      terminalScreen.style.display='block';
-      let i=0;
-      (function typeChar(){
-        if(i<storyLines.length){
-          terminalOutput.textContent+=storyLines[i++];
-          tWrapper.appendChild(terminalCursor);
-          terminalCursor.scrollIntoView({behavior:'smooth',block:'nearest'});
-          setTimeout(typeChar,30);
-        }else{showStartButton();}
-      })();
-    }
-    function showStartButton(){
-      const btn=document.createElement('button');
-      btn.textContent='Start the Hunt Now';
-      btn.className='next-button';
-      btn.onclick=()=>{terminalScreen.style.display='none';
-                       document.getElementById('stage-1-screen').style.display='flex';
-                       showChatControls();injectPreChat(1);};
-      terminalOutput.appendChild(document.createElement('br'));
-      terminalOutput.appendChild(document.createElement('br'));
-      terminalOutput.appendChild(btn);
-    }
+Outlast the Hunt. Bring Matthew Stout home.
+`;let i=0;
+  (function type(){if(i<text.length){out.textContent+=text[i++];wrap.appendChild(cur);cur.scrollIntoView({block:'nearest'});setTimeout(type,26);}else showBegin();})();
+}
+function showBegin(){
+  const b=document.createElement('button');b.textContent='Start the Hunt';b.className='next-button';
+  b.onclick=()=>{terminal.style.display='none';document.getElementById('stage-1-screen').style.display='flex';chatT.style.display='flex';preChat(1);};
+  out.appendChild(document.createElement('br'));out.appendChild(document.createElement('br'));out.appendChild(b);
+}
 
-    /* ---------- Stage navigation ---------- */
-    function showStage2Password(){
-      document.getElementById('stage-1-screen').style.display='none';
-      document.getElementById('stage-2-password-screen').style.display='flex';
-      document.getElementById('stage2Password').focus();
-    }
-    function showStage3Password(){
-      document.getElementById('stage-2-screen').style.display='none';
-      document.getElementById('stage-3-password-screen').style.display='flex';
-      document.getElementById('stage3Password').focus();
-    }
+// Stage Transitions
+function showStage2Password(){document.getElementById('stage-1-screen').style.display='none';document.getElementById('stage-2-password-screen').style.display='flex';document.getElementById('stage2Password').focus();}
+function showStage3Password(){document.getElementById('stage-2-screen').style.display='none';document.getElementById('stage-3-password-screen').style.display='flex';document.getElementById('stage3Password').focus();}
+document.getElementById('stage2Password').addEventListener('keypress',e=>{if(e.key==='Enter'&&e.target.value.trim().toLowerCase()==='matthew'){document.getElementById('stage-2-password-screen').style.display='none';document.getElementById('stage-2-screen').style.display='flex';preChat(2);}});
+document.getElementById('stage3Password').addEventListener('keypress',e=>{if(e.key==='Enter'&&e.target.value.trim().toLowerCase()==='matthew'){document.getElementById('stage-3-password-screen').style.display='none';document.getElementById('stage-3-screen').style.display='flex';preChat(3);}});
+document.getElementById('cipherInput').addEventListener('input',function(){
+  const s=-7,raw=this.value.toLowerCase();let dec='';for(let ch of raw){const c=ch.charCodeAt(0);dec+=c>=97&&c<=122?String.fromCharCode(((c-97+s+26)%26)+97):ch;}
+  document.getElementById('cipherOutput').value=dec;if(dec.trim().toLowerCase()==='matthew')finish();});
 
-    /* ---------- Stage passwords ---------- */
-    document.getElementById('stage2Password').addEventListener('keypress',e=>{
-      if(e.key==='Enter'&&e.target.value.trim().toLowerCase()==='matthew'){
-        document.getElementById('stage-2-password-screen').style.display='none';
-        document.getElementById('stage-2-screen').style.display='flex';
-        injectPreChat(2);
-      }
-    });
-    document.getElementById('stage3Password').addEventListener('keypress',e=>{
-      if(e.key==='Enter'&&e.target.value.trim().toLowerCase()==='matthew'){
-        document.getElementById('stage-3-password-screen').style.display='none';
-        document.getElementById('stage-3-screen').style.display='flex';
-        injectPreChat(3);
-      }
-    });
-
-    /* ---------- Cipher decoder & completion ---------- */
-    document.getElementById('cipherInput').addEventListener('input',function(){
-      const shift=-7;
-      const raw=this.value.toLowerCase();
-      let decoded='';
-      for(let ch of raw){
-        const c=ch.charCodeAt(0);
-        decoded+=c>=97&&c<=122?String.fromCharCode(((c-97+shift+26)%26)+97):ch;
-      }
-      document.getElementById('cipherOutput').value=decoded;
-      if(decoded.trim().toLowerCase()==='matthew'){triggerCompletion();}
-    });
-    function triggerCompletion(){
-      document.getElementById('stage-3-screen').style.display='none';
-      const screen=document.getElementById('completion-screen');
-      const out=document.getElementById('completion-output');
-      const cur=document.getElementById('completion-cursor');
-      const wrap=document.getElementById('completion-output-wrapper');
-      const finalLog=
+// ✅ Fixed Completion Function
+function finish(){
+  document.getElementById('stage-3-screen').style.display='none';
+  const comp=document.getElementById('completion-screen'),
+        cOut=document.getElementById('completion-output'),
+        cCur=document.getElementById('completion-cursor'),
+        cWrap=document.getElementById('completion-output-wrapper');
+  const txt=
 `\n███ FINAL ENTRY ██
 
 You found it.
@@ -382,9 +254,9 @@ And my name was the key.”
 “I remember light.
 And someone calling me back.”
 
-"You found me.
+You found me.
 You saw the signs.
-You didn’t run."
+You didn’t run.
 
 //
 
@@ -397,97 +269,20 @@ Not everyone makes it out.
 
 But you did.
 `;
-      screen.style.display='flex';out.textContent='';let i=0;
-      (function typeComp(){
-        if(i<finalLog.length){
-          out.textContent+=finalLog[i++];
-          wrap.appendChild(cur);
-          cur.scrollIntoView({behavior:'smooth',block:'nearest'});
-          setTimeout(typeComp,30);
-        }else{
-          launchConfetti();
-          const btn=document.createElement('button');
-          btn.textContent='Return to Main Menu';
-          btn.className='next-button';
-          btn.style.marginTop='40px';
-          btn.onclick=()=>alert('Your progress has been recorded. Welcome back.');
-          out.appendChild(document.createElement('br'));
-          out.appendChild(document.createElement('br'));
-          out.appendChild(btn);
-        }
-      })();
-    }
+  let i = 0; comp.style.display = 'flex'; cOut.textContent = '';
+  (function t(){if(i<txt.length){cOut.textContent+=txt[i++];cWrap.appendChild(cCur);cCur.scrollIntoView();setTimeout(t,28);}else confetti();})();
+}
+function confetti(){for(let i=0;i<120;i++){const d=document.createElement('div');d.style.left=Math.random()*100+'vw';
+  d.style.background=`hsl(${Math.random()*360},100%,60%)`;d.style.animationDelay=Math.random()+'s';document.body.appendChild(d);setTimeout(()=>d.remove(),3000);}}
 
-    /* ---------- Confetti ---------- */
-    function launchConfetti(){
-      const canvas=document.createElement('canvas');
-      canvas.style.position='fixed';canvas.style.top=0;canvas.style.left=0;
-      canvas.style.width='100%';canvas.style.height='100%';canvas.style.pointerEvents='none';
-      canvas.width=window.innerWidth;canvas.height=window.innerHeight;
-      document.body.appendChild(canvas);
-      const ctx=canvas.getContext('2d');
-      const pieces=[];
-      for(let i=0;i<150;i++){
-        pieces.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height-canvas.height,
-                     r:Math.random()*6+4,d:Math.random()*30+10,
-                     color:`hsl(${Math.random()*360},70%,60%)`,tilt:Math.random()*10-10});
-      }
-      function draw(){
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        pieces.forEach(p=>{ctx.fillStyle=p.color;ctx.fillRect(p.x+p.tilt,p.y,p.r,p.r);});
-        update();
-      }
-      function update(){
-        pieces.forEach(p=>{
-          p.y+=Math.cos(p.d/10)+2;
-          p.x+=Math.sin(p.d/20);
-          if(p.y>canvas.height){p.y=-10;p.x=Math.random()*canvas.width;}
-        });
-      }
-      let frame;(function animate(){frame=requestAnimationFrame(animate);draw();})();
-      setTimeout(()=>{cancelAnimationFrame(frame);document.body.removeChild(canvas);},3000);
-    }
-
-    /* ---------- Chat UI control ---------- */
-    function showChatControls(){chatToggle.style.display='flex';}
-    chatToggle.addEventListener('click',()=>{chatWindow.style.display=chatWindow.style.display==='flex'?'none':'flex';});
-
-    /* ---------- Local chat (demo) ---------- */
-    function addMessageDOM(name,text){
-      const div=document.createElement("div");
-      div.className="message";
-      div.innerHTML=`<span>${name}:</span> ${text}`;
-      messagesDiv.appendChild(div);
-      messagesDiv.scrollTop=messagesDiv.scrollHeight;
-    }
-    function injectPreChat(stageNum){
-      if(injectedStages.has(stageNum))return;
-      const demo={
-        1:[
-          {n:"Riley",t:"Intro video cuts off right at the scream."},
-          {n:"Jordan",t:"Anyone brave enough to check Esports tonight?"}
-        ],
-        2:[
-          {n:"Morgan",t:"Theology Commons door was unlocked but lights were flickering."},
-          {n:"Avery",t:"Found MATTHEW carved under the desk."}
-        ],
-        3:[
-          {n:"Parker",t:"Tree carvings look like numbers… anyone decode?"},
-          {n:"Sky",t:"Decoding now… almost there!"}
-        ]
-      };
-      (demo[stageNum]||[]).forEach(m=>addMessageDOM(m.n,m.t));
-      injectedStages.add(stageNum);
-    }
-
-    chatSend.onclick=sendMsg;
-    chatInput.addEventListener("keypress",e=>{if(e.key==="Enter")sendMsg();});
-    function sendMsg(){
-      const txt=chatInput.value.trim();
-      if(!txt)return;
-      chatInput.value="";
-      addMessageDOM(playerFirstName,txt);   // local demo only
-    }
-  </script>
+// Chat
+chatT.addEventListener('click',()=>chatW.style.display=chatW.style.display==='flex'?'none':'flex');
+chatS.onclick=send;chatI.addEventListener('keypress',e=>{if(e.key==='Enter')send();});
+function send(){const t=chatI.value.trim();if(!t)return;chatI.value='';msg(player,t);}
+function msg(n,t){const d=document.createElement('div');d.className='message';d.innerHTML=`<span>${n}:</span> ${t}`;chatM.appendChild(d);chatM.scrollTop=chatM.scrollHeight;}
+function preChat(s){if(loadedStage.has(s))return;
+  const preset={1:[{n:'Riley',t:'Intro video cuts off right at the scream.'}],2:[{n:'Morgan',t:'Theology Commons door was unlocked but lights were flickering.'}],3:[{n:'Sky',t:'Decoding now… almost there!'}]};
+  (preset[s]||[]).forEach(m=>msg(m.n,m.t));loadedStage.add(s);}
+</script>
 </body>
 </html>
