@@ -1,188 +1,350 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Wild Hunt ARG</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{
-  height:100%;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  background:url('https://i.imgur.com/y1E4ys7.jpeg') center/cover no-repeat fixed;
-  color:#fff;overflow:hidden;animation:fadeIn 1.2s ease forwards;
-}
-@keyframes fadeIn{to{opacity:1}}  @keyframes blink{to{visibility:hidden}}
+  <meta charset="UTF-8" />
+  <title>Wild Hunt ARG – XP Terminal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: url('https://i.imgur.com/G2KYMLC.jpeg') center/cover no-repeat fixed;
+      font-family: Tahoma, "MS Sans Serif", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    .xp-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    #date {
+      font-size: 18px;
+      color: #ffffff;
+      text-shadow: 1px 1px 3px #000;
+      margin-bottom: 6px;
+    }
+    #time {
+      font-size: 48px;
+      font-weight: bold;
+      color: #ffffff;
+      text-shadow: 2px 2px 5px #000;
+    }
+    .login-container, .account-container {
+      background-color: #ece9d8;
+      border: 2px solid #000;
+      border-radius: 6px;
+      box-shadow: 4px 4px 0 #666;
+      padding: 20px 30px;
+      width: 320px;
+      text-align: center;
+    }
+    .password-box, .field input {
+      background-color: #fff;
+      border: 1px solid #999;
+      border-radius: 3px;
+      padding: 6px;
+      font-size: 16px;
+      width: 100%;
+      margin: 10px 0;
+    }
+    .prompt {
+      font-size: 12px;
+      color: #000;
+      margin-top: 6px;
+    }
+    .xp-button {
+      background: linear-gradient(to bottom, #f6f6f6 0%, #d9d9d9 100%);
+      border: 1px solid #666;
+      padding: 6px 12px;
+      font-size: 14px;
+      font-weight: bold;
+      font-family: Tahoma, sans-serif;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+    .xp-button:hover {
+      background: linear-gradient(to bottom, #ffffff 0%, #c0c0c0 100%);
+    }
+    .field {
+      text-align: left;
+      font-size: 13px;
+      color: #000;
+      margin-top: 10px;
+    }
+    #account-screen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(5px);
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 10;
+    }
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .button-row button {
+      flex: 1;
+    }
+    #terminal-screen {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      font-family: "Courier New", monospace;
+    }
+    .terminal-window {
+      width: 95%;
+      height: 85vh;
+      background: #000;
+      border: 2px solid #000;
+      box-shadow: 5px 5px 15px #000;
+      display: flex;
+      flex-direction: column;
+    }
+    .terminal-header {
+      background: linear-gradient(to bottom, #004e98, #003873);
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 10px;
+      font-size: 14px;
+    }
+    .terminal-title { font-weight: bold; }
+    .terminal-controls button {
+      background: #c0c0c0;
+      border: 1px solid #888;
+      font-weight: bold;
+      font-size: 12px;
+      width: 24px;
+      height: 20px;
+      margin-left: 4px;
+      pointer-events: none;
+    }
+    #terminal-output-wrapper {
+      padding: 20px;
+      white-space: pre-wrap;
+      font-size: 15px;
+      line-height: 1.5;
+      color: #fff;
+      flex-grow: 1;
+      overflow-y: auto;
+      position: relative;
+    }
+    #terminal-cursor {
+      display: inline-block;
+      width: 10px;
+      height: 16px;
+      background: #fff;
+      margin-left: 2px;
+      animation: blink 1s steps(2, start) infinite;
+    }
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+    canvas#glitch-canvas {
+      position: fixed;
+      inset: 0;
+      display: none;
+      z-index: 9998;
+      background: black;
+    }
 
-header{text-align:center;margin-top:60px}
-#date{font-size:22px;font-weight:300;text-shadow:0 0 6px #0008}
-#time{font-size:110px;font-weight:600;text-shadow:0 0 20px #000b;margin-top:10px}
-#logo{width:300px;margin:25px auto 0;display:block;opacity:.95}
+    /* Mobile Styles */
+    @media (max-width: 600px) {
+      .login-container, .account-container {
+        width: 90%;
+        padding: 16px;
+      }
 
-.login-container{display:flex;flex-direction:column;align-items:center;margin:40px 0 80px}
-.password-box{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);
-              border-radius:20px;padding:10px 20px;min-width:280px;margin-bottom:12px}
-input{background:transparent;border:none;outline:none;font-size:16px;width:100%;color:#fff;text-align:center}
-input::placeholder{color:#fff}.prompt{font-size:14px;color:#fff;text-shadow:0 0 5px #0006}
+      .terminal-window {
+        width: 98%;
+        height: 80vh;
+        font-size: 13px;
+      }
 
-#account-screen{position:absolute;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(25px);
-                display:none;align-items:center;justify-content:center;flex-direction:column}
-.account-container{background:rgba(255,255,255,.12);backdrop-filter:blur(25px);border-radius:12px;
-                   padding:40px;width:90%;max-width:480px;text-align:center;box-shadow:0 0 30px #0008}
-.account-container img{max-width:180px;margin-bottom:24px;opacity:.92}
-.account-container h2{margin-bottom:12px}
-.account-container p{margin-bottom:28px;font-size:15px;opacity:.85}
-.field{margin-bottom:20px;text-align:left}
-.field label{font-size:14px;margin-bottom:8px;display:block}
-.field input{background:rgba(255,255,255,.08);border:none;border-radius:6px;padding:10px;color:#fff;width:100%}
-.buttons{display:flex;justify-content:space-between;margin-top:20px}
-button{padding:10px 20px;font-size:15px;border:none;border-radius:5px;cursor:pointer}
-.back{background:#999}.continue{background:#007aff;color:#fff}.back:hover{background:#777}.continue:hover{background:#005ecc}
+      #terminal-output-wrapper {
+        padding: 14px;
+        font-size: 13px;
+      }
 
-#glitch-screen{position:fixed;inset:0;display:none;z-index:10000;background:#000;pointer-events:none;overflow:hidden}
-.glitch-line{position:absolute;left:0;width:100%;height:2px;opacity:.1;animation:glitchMove .35s infinite ease-in-out}
-@keyframes glitchMove{
-  0%{transform:translateX(0);opacity:.05}
-  50%{transform:translateX(40px);opacity:.35}
-  100%{transform:translateX(-40px);opacity:.05}
-}
-@keyframes glitchPulse{
-  0%,100%{opacity:.15}20%,50%,70%{opacity:1}40%,60%,80%{opacity:.25}
-}
+      #time {
+        font-size: 36px;
+      }
 
-#terminal-screen{position:fixed;inset:0;display:none;z-index:9999;background:#000;
-                 font-family:'Courier New',monospace;color:#fff;padding:40px;text-align:left}
-#terminal-output-wrapper{font-size:20px;white-space:pre-wrap;display:inline}
-#terminal-output{display:inline}
-#terminal-cursor{display:inline-block;width:10px;height:20px;background:#fff;margin-left:2px;animation:blink 1s steps(2,start) infinite}
-
-#stage-1-screen,#stage-2-password-screen,#stage-2-screen,
-#stage-3-password-screen,#stage-3-screen,#completion-screen{
-  display:none;position:absolute;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(20px);
-  align-items:center;justify-content:center;flex-direction:column;padding:40px 20px;font-family:'Courier New',monospace
-}
-.video-wrapper{width:100%;max-width:720px;aspect-ratio:16/9;border-radius:12px;overflow:hidden;
-               box-shadow:0 0 30px rgba(0,0,0,.5);margin-bottom:30px}
-.lore-box{background:rgba(255,255,255,.08);backdrop-filter:blur(20px);padding:20px;border-radius:12px;
-          max-width:700px;font-size:16px;line-height:1.6;box-shadow:0 0 10px rgba(0,0,0,.4);margin-bottom:30px}
-.next-button{padding:12px 24px;font-size:16px;border:2px solid #fff;background:transparent;color:#fff;cursor:pointer;border-radius:6px;font-family:'Courier New',monospace}
-.next-button:hover{background:#222}
-#completion-screen{overflow-y:auto}
-#completion-cursor{animation:blink 1s steps(2,start) infinite}
-#completion-output-wrapper{font-size:20px;white-space:pre-wrap;display:inline}
-
-#chat-toggle{position:fixed;bottom:20px;right:20px;width:60px;height:60px;border-radius:50%;
-  background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);display:none;align-items:center;justify-content:center;
-  cursor:pointer;backdrop-filter:blur(10px);z-index:11000;font-size:24px}
-#chat-window{position:fixed;bottom:90px;right:20px;width:300px;max-height:400px;display:none;flex-direction:column;
-  background:rgba(0,0,0,.7);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,.25);border-radius:12px;overflow:hidden;z-index:11000}
-#chat-header{padding:10px;font-weight:600;border-bottom:1px solid rgba(255,255,255,.2);text-align:left}
-#chat-messages{flex:1;overflow-y:auto;padding:10px;font-size:14px}.message{margin-bottom:8px}.message span{font-weight:600;color:#7ecfff}
-#chat-input-area{display:flex;border-top:1px solid rgba(255,255,255,.2)}
-#chat-input{flex:1;background:transparent;border:none;padding:10px;color:#fff;font-size:14px}
-#chat-send{background:transparent;border:none;color:#fff;padding:0 15px;cursor:pointer;font-size:16px}#chat-send:hover{color:#7ecfff}
-</style>
+      #date {
+        font-size: 16px;
+      }
+    }
+  </style>
 </head>
 <body>
-<header id="header"><div id="date"></div><div id="time"></div><img id="logo" src="https://i.imgur.com/4f3ODs7.png" alt="CAB Logo"></header>
-<div class="login-container" id="login-container">
-  <div class="password-box"><input id="passwordInput" type="password" placeholder="Enter Password"></div>
-  <div class="prompt">Enter Password or Login Here</div>
-</div>
-<div id="account-screen">
-  <div class="account-container">
-    <img src="https://i.imgur.com/7mXxwRm.png" alt="CAB Logo">
-    <h2>Create a Student Account</h2>
-    <p>Fill out the form below to create your student account.</p>
-    <div class="field"><label>Full Name:</label><input id="fullName" type="text" placeholder="e.g., Matthew Stout"></div>
-    <div class="field"><label>Student ID Number:</label><input id="studentId" type="text" placeholder="e.g., 123456789"></div>
-    <div class="buttons"><button class="back" onclick="goBack()">Back</button><button class="continue" onclick="handleAccountContinue()">Continue</button></div>
+  <div class="xp-header">
+    <div id="date">Loading Date...</div>
+    <div id="time">00:00</div>
   </div>
-</div>
-<div id="glitch-screen"></div>
-<div id="terminal-screen"><div id="terminal-output-wrapper"><span id="terminal-output"></span><span id="terminal-cursor"></span></div></div>
-<div id="stage-1-screen">
-  <div class="video-wrapper"><iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&controls=1&modestbranding=1" allow="autoplay; encrypted-media" allowfullscreen style="width:100%;height:100%;border:none;"></iframe></div>
-  <div class="lore-box">
-    They joked the skull was cursed. Then one by one, their voices stopped answering.<br><br>
-    If you’re reading this, you're already marked. Watch the tapes. Decode the signs.<br><br>
-    The last footage ended at the Esports lounge. Go there... but tread carefully.
-  </div>
-  <button class="next-button" onclick="showStage2Password()">Proceed to Stage 2</button>
-</div>
-<div id="stage-2-password-screen">
-  <div class="lore-box">Access to the Theology Commons archive requires the keyword.<br><br>Type the name of the one they spoke of most often.</div>
-  <div class="password-box"><input id="stage2Password" type="password" placeholder="Enter Password"></div>
-  <div class="prompt">Password required to access Stage 2</div>
-</div>
-<div id="stage-2-screen">
-  <div class="video-wrapper"><iframe src="https://www.youtube.com/embed/YOUR_STAGE2_VIDEO_ID?autoplay=1&controls=1"
-      allow="autoplay; encrypted-media" allowfullscreen style="width:100%;height:100%;border:none;"></iframe></div>
-  <div class="lore-box">
-    Theology Commons was supposed to be a safe place. But it echoed.<br><br>
-    The whisper said “Absalom was hung on one of these. There was no grace for him.”<br><br>
-    Something scratched Matthew’s name into the wood.<br>
-    Next clue leads to the old ASGCU tree, where fruit never grew.
-  </div>
-  <button class="next-button" onclick="showStage3Password()">Proceed to Stage 3</button>
-</div>
-<div id="stage-3-password-screen">
-  <div class="lore-box">Only those who carry Matthew's cipher may continue.<br><br>Decode or turn back.</div>
-  <div class="password-box"><input id="stage3Password" type="password" placeholder="Enter Password"></div>
-  <div class="prompt">Password required to access Stage 3</div>
-</div>
-<div id="stage-3-screen">
-  <div class="video-wrapper"><iframe src="https://www.youtube.com/embed/YOUR_STAGE3_VIDEO_ID?autoplay=1&controls=1"
-      allow="autoplay; encrypted-media" allowfullscreen style="width:100%;height:100%;border:none;"></iframe></div>
-  <div class="lore-box">
-    The roots ran deep beneath the ASGCU tree. Someone left carvings.<br><br>
-    This was the last place we picked up Matthew’s voice.<br>
-    It’s scrambled now. Use his cipher to decode.
-  </div>
-  <div class="field"><label>Ciphered Message:</label><input id="cipherInput" type="text" placeholder="e.g., nvwnpgqq irlr ds tbkcfwm"></div>
-  <div class="field"><label>Decoded Result:</label><input id="cipherOutput" type="text" readonly></div>
-</div>
-<div id="completion-screen"><div id="completion-output-wrapper"><span id="completion-output"></span><span id="completion-cursor"></span></div></div>
-<div id="chat-toggle">💬</div>
-<div id="chat-window"><div id="chat-header">Wild Hunt Chat</div><div id="chat-messages"></div><div id="chat-input-area"><input id="chat-input" type="text" placeholder="Type a message…"><button id="chat-send">⏎</button></div></div>
-<script>
-// Time & Date
-function updateTime(){const d=new Date(),h=d.getHours()%12||12,m=d.getMinutes().toString().padStart(2,'0');
-  document.getElementById('time').textContent=`${h}:${m}`;
-  document.getElementById('date').textContent=d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});}
-updateTime();setInterval(updateTime,1000);
 
-// Variables
-const login=document.getElementById('login-container'),account=document.getElementById('account-screen'),
-      glitch=document.getElementById('glitch-screen'),terminal=document.getElementById('terminal-screen'),
-      out=document.getElementById('terminal-output'),cur=document.getElementById('terminal-cursor'),
-      wrap=document.getElementById('terminal-output-wrapper'),chatT=document.getElementById('chat-toggle'),
-      chatW=document.getElementById('chat-window'),chatM=document.getElementById('chat-messages'),
-      chatI=document.getElementById('chat-input'),chatS=document.getElementById('chat-send');
-let player='Player',loadedStage=new Set();
+  <div class="login-container" id="login-container">
+    <div class="password-box">
+      <input id="passwordInput" type="password" placeholder="Enter Password" autofocus />
+    </div>
+    <div class="prompt">Please enter your password to log in.</div>
+    <button class="xp-button" onclick="handleLogin()">OK</button>
+  </div>
 
-// Auth flow
-document.getElementById('passwordInput').addEventListener('keypress',e=>{
-  if(e.key==='Enter'){e.target.value.trim().toLowerCase()==='matthew'? (login.style.display='none',account.style.display='flex'):e.target.select();}});
-function goBack(){account.style.display='none';login.style.display='flex'}
-function handleAccountContinue(){
-  const n=document.getElementById('fullName').value.trim();if(!n){alert('Name?');return;}
-  player=n.split(' ')[0];account.style.display='none';document.getElementById('header').style.display='none';login.style.display='none';
-  showGlitchEffect(startTerminal);
-}
+  <div id="account-screen">
+    <div class="account-container">
+      <h3>Create a Student Account</h3>
+      <div class="field">
+        <label>Full Name:</label>
+        <input id="fullName" type="text" placeholder="e.g., Matthew Stout">
+      </div>
+      <div class="field">
+        <label>Student ID Number:</label>
+        <input id="studentId" type="text" placeholder="e.g., 123456789">
+      </div>
+      <div class="button-row">
+        <button class="xp-button" onclick="goBack()">Back</button>
+        <button class="xp-button" onclick="handleAccountContinue()">Continue</button>
+      </div>
+    </div>
+  </div>
 
-// Glitch + Terminal
-function showGlitchEffect(cb){
-  glitch.innerHTML='';for(let i=0;i<70;i++){const l=document.createElement('div');l.className='glitch-line';
-  l.style.top=Math.random()*100+'%';l.style.animationDuration=(Math.random()*0.6+0.2)+'s';
-  l.style.background=`rgba(${~~(Math.random()*255)},${~~(Math.random()*255)},${~~(Math.random()*255)},.3)`;glitch.appendChild(l);}
-  glitch.style.display='block';glitch.style.animation='glitchPulse 1s';
-  setTimeout(()=>{glitch.style.display='none';cb&&cb();},1000);
-}
-function startTerminal(){
-  terminal.style.display='block';out.textContent='';
-  const text=
-`\nHello, ${player}.
+  <canvas id="glitch-canvas"></canvas>
+
+  <div id="terminal-screen">
+    <div class="terminal-window">
+      <div class="terminal-header">
+        <span class="terminal-title">WildHunt.exe</span>
+        <div class="terminal-controls">
+          <button>_</button>
+          <button>✕</button>
+        </div>
+      </div>
+      <div id="terminal-output-wrapper">
+        <div id="terminal-output"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function updateTime() {
+      const d = new Date();
+      const h = d.getHours() % 12 || 12;
+      const m = d.getMinutes().toString().padStart(2, '0');
+      document.getElementById('time').textContent = `${h}:${m}`;
+      document.getElementById('date').textContent = d.toLocaleDateString('en-US', {
+        weekday: 'long', month: 'long', day: 'numeric'
+      });
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    function handleLogin() {
+      const pass = document.getElementById('passwordInput').value.trim().toLowerCase();
+      if (pass === 'matthew') {
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('account-screen').style.display = 'flex';
+      } else {
+        alert('Incorrect password.');
+      }
+    }
+
+    function goBack() {
+      document.getElementById('account-screen').style.display = 'none';
+      document.getElementById('login-container').style.display = 'flex';
+    }
+
+    function handleAccountContinue() {
+      const name = document.getElementById('fullName').value.trim();
+      const id = document.getElementById('studentId').value.trim();
+      if (!name || !id) {
+        alert('Please fill in both fields.');
+        return;
+      }
+      glitchCrash();
+    }
+
+    function glitchCrash() {
+      const canvas = document.getElementById('glitch-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = document.documentElement.clientWidth;
+      canvas.height = document.documentElement.clientHeight;
+      canvas.style.display = 'block';
+
+      let frames = 0;
+      const maxFrames = 8;
+      const glitchInterval = setInterval(() => {
+        const imgData = ctx.createImageData(canvas.width, canvas.height);
+        for (let i = 0; i < imgData.data.length; i += 4) {
+          const val = Math.random() * 255;
+          imgData.data[i] = val;
+          imgData.data[i + 1] = Math.random() * 255;
+          imgData.data[i + 2] = Math.random() * 255;
+          imgData.data[i + 3] = Math.random() < 0.8 ? 80 : 255;
+        }
+        ctx.putImageData(imgData, 0, 0);
+        frames++;
+        if (frames > maxFrames) {
+          clearInterval(glitchInterval);
+          canvas.style.display = 'none';
+          showCrashScreen();
+        }
+      }, 100);
+    }
+
+    function showCrashScreen() {
+      const crash = document.createElement('div');
+      crash.style.position = 'fixed';
+      crash.style.inset = '0';
+      crash.style.background = '#0000aa';
+      crash.style.color = '#fff';
+      crash.style.fontFamily = 'Courier New, monospace';
+      crash.style.fontSize = '16px';
+      crash.style.padding = '60px';
+      crash.style.lineHeight = '1.5';
+      crash.style.zIndex = '9999';
+      crash.innerText = `A fatal exception 0x000000E has occurred at 0x0028:C0011E36 in VXD VMM(01) + 00010E36.
+The current application will be terminated.
+
+SYSTEM FLAG: FIND MATTHEW IN THE BASEMENT
+DO NOT IGNORE THIS MESSAGE. THIS IS NOT A DRILL.
+
+*  Press any key to continue
+*  Press CTRL+ALT+DEL to restart your computer. You will lose any unsaved information in all applications.
+
+Press any key to continue _`;
+
+      document.body.appendChild(crash);
+      setTimeout(() => {
+        crash.remove();
+        document.getElementById('terminal-screen').style.display = 'flex';
+        typeOriginalNarrative();
+      }, 2600);
+    }
+
+    function typeOriginalNarrative() {
+      const out = document.getElementById('terminal-output');
+      const wrapper = document.getElementById('terminal-output-wrapper');
+      const cursor = document.createElement('div');
+      cursor.id = 'terminal-cursor';
+      out.textContent = '';
+
+      const text = `\nHello, Matthew.
 You have accessed the emergency log of Matthew Stout.
 
   ▸  13 days ago, Matt and four friends hiked the south rim of the Grand Canyon.
@@ -207,82 +369,76 @@ down there—maybe it lures students in.
 
 Two fruits of the Spirit are missing here. WHERE ARE THEY?
 
-If you can read this, join the search party.
-Outlast the Hunt. Bring Matthew Stout home.
-`;let i=0;
-  (function type(){if(i<text.length){out.textContent+=text[i++];wrap.appendChild(cur);cur.scrollIntoView({block:'nearest'});setTimeout(type,26);}else showBegin();})();
-}
-function showBegin(){
-  const b=document.createElement('button');b.textContent='Start the Hunt';b.className='next-button';
-  b.onclick=()=>{terminal.style.display='none';document.getElementById('stage-1-screen').style.display='flex';chatT.style.display='flex';preChat(1);};
-  out.appendChild(document.createElement('br'));out.appendChild(document.createElement('br'));out.appendChild(b);
-}
-
-// Stage Transitions
-function showStage2Password(){document.getElementById('stage-1-screen').style.display='none';document.getElementById('stage-2-password-screen').style.display='flex';document.getElementById('stage2Password').focus();}
-function showStage3Password(){document.getElementById('stage-2-screen').style.display='none';document.getElementById('stage-3-password-screen').style.display='flex';document.getElementById('stage3Password').focus();}
-document.getElementById('stage2Password').addEventListener('keypress',e=>{if(e.key==='Enter'&&e.target.value.trim().toLowerCase()==='matthew'){document.getElementById('stage-2-password-screen').style.display='none';document.getElementById('stage-2-screen').style.display='flex';preChat(2);}});
-document.getElementById('stage3Password').addEventListener('keypress',e=>{if(e.key==='Enter'&&e.target.value.trim().toLowerCase()==='matthew'){document.getElementById('stage-3-password-screen').style.display='none';document.getElementById('stage-3-screen').style.display='flex';preChat(3);}});
-document.getElementById('cipherInput').addEventListener('input',function(){
-  const s=-7,raw=this.value.toLowerCase();let dec='';for(let ch of raw){const c=ch.charCodeAt(0);dec+=c>=97&&c<=122?String.fromCharCode(((c-97+s+26)%26)+97):ch;}
-  document.getElementById('cipherOutput').value=dec;if(dec.trim().toLowerCase()==='matthew')finish();});
-
-// ✅ Fixed Completion Function
-function finish(){
-  document.getElementById('stage-3-screen').style.display='none';
-  const comp=document.getElementById('completion-screen'),
-        cOut=document.getElementById('completion-output'),
-        cCur=document.getElementById('completion-cursor'),
-        cWrap=document.getElementById('completion-output-wrapper');
-  const txt=
-`\n███ FINAL ENTRY ██
-
-You found it.
-
-The one name scratched on every desk.
-The whisper in the vending machine static.
-The cipher that outlived the Hunt.
-
-MATTHEW.
-
-[Matthew’s Final Log — Transcribed]
-
-“They said once you're marked, there’s no way out.
-But the cipher was a door.
-And my name was the key.”
-
-“I remember light.
-And someone calling me back.”
-
-You found me.
-You saw the signs.
-You didn’t run.
-
-//
-
-Congratulations.
-
-You have completed The Wild Hunt.
-Matthew has been recovered.
-
-Not everyone makes it out.
-
-But you did.
+If you could read this, please help me find my friends.
 `;
-  let i = 0; comp.style.display = 'flex'; cOut.textContent = '';
-  (function t(){if(i<txt.length){cOut.textContent+=txt[i++];cWrap.appendChild(cCur);cCur.scrollIntoView();setTimeout(t,28);}else confetti();})();
-}
-function confetti(){for(let i=0;i<120;i++){const d=document.createElement('div');d.style.left=Math.random()*100+'vw';
-  d.style.background=`hsl(${Math.random()*360},100%,60%)`;d.style.animationDelay=Math.random()+'s';document.body.appendChild(d);setTimeout(()=>d.remove(),3000);}}
 
-// Chat
-chatT.addEventListener('click',()=>chatW.style.display=chatW.style.display==='flex'?'none':'flex');
-chatS.onclick=send;chatI.addEventListener('keypress',e=>{if(e.key==='Enter')send();});
-function send(){const t=chatI.value.trim();if(!t)return;chatI.value='';msg(player,t);}
-function msg(n,t){const d=document.createElement('div');d.className='message';d.innerHTML=`<span>${n}:</span> ${t}`;chatM.appendChild(d);chatM.scrollTop=chatM.scrollHeight;}
-function preChat(s){if(loadedStage.has(s))return;
-  const preset={1:[{n:'Riley',t:'Intro video cuts off right at the scream.'}],2:[{n:'Morgan',t:'Theology Commons door was unlocked but lights were flickering.'}],3:[{n:'Sky',t:'Decoding now… almost there!'}]};
-  (preset[s]||[]).forEach(m=>msg(m.n,m.t));loadedStage.add(s);}
-</script>
+      const scrambleChars = ['@', '#', '%', '&', '*', '+', '~', '?'];
+      let i = 0;
+
+      function scrambleAndPrint(str, callback) {
+        let j = 0;
+        function nextChar() {
+          if (j < str.length) {
+            const span = document.createElement('span');
+            out.appendChild(span);
+            let scrambleFrame = 0;
+            const interval = setInterval(() => {
+              if (scrambleFrame < 6) {
+                span.textContent = scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
+                scrambleFrame++;
+              } else {
+                clearInterval(interval);
+                span.textContent = str[j++];
+                setTimeout(nextChar, 60);
+              }
+            }, 35);
+          } else {
+            setTimeout(callback, 400);
+          }
+        }
+        nextChar();
+      }
+
+      function type() {
+        if (i < text.length) {
+          const target = text.slice(i);
+
+          if (target.startsWith('**The Wild Hunt**')) {
+            scrambleAndPrint('**The Wild Hunt**', () => {
+              i += 16;
+              appendCursor();
+              setTimeout(type, 100);
+            });
+            return;
+          }
+
+          if (target.startsWith('20931722')) {
+            scrambleAndPrint('20931722', () => {
+              i += 8;
+              appendCursor();
+              setTimeout(type, 100);
+            });
+            return;
+          }
+
+          out.appendChild(document.createTextNode(text[i++]));
+          appendCursor();
+          setTimeout(type, 40);
+        } else {
+          out.appendChild(document.createTextNode('\nC:\\WildHunt\\>'));
+          appendCursor();
+        }
+      }
+
+      function appendCursor() {
+        const existingCursor = document.getElementById('terminal-cursor');
+        if (existingCursor) existingCursor.remove();
+        out.appendChild(cursor);
+        wrapper.scrollTop = wrapper.scrollHeight;
+      }
+
+      type();
+    }
+  </script>
 </body>
 </html>
