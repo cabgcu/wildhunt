@@ -10,28 +10,29 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      background: url('https://i.imgur.com/G2KYMLC.jpeg') center/cover no-repeat fixed;
+      background: url('https://i.imgur.com/9sQvmTz.png') center/cover no-repeat fixed;
       font-family: Tahoma, "MS Sans Serif", sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-direction: column;
+      overflow: hidden;
     }
     .xp-header {
       text-align: center;
       margin-bottom: 30px;
     }
     #date {
-      font-size: 18px;
+      font-size: 24px;
       color: #ffffff;
-      text-shadow: 1px 1px 3px #000;
-      margin-bottom: 6px;
+      text-shadow: 1px 1px 4px #000;
+      margin-bottom: 10px;
     }
     #time {
-      font-size: 48px;
+      font-size: 72px;
       font-weight: bold;
       color: #ffffff;
-      text-shadow: 2px 2px 5px #000;
+      text-shadow: 3px 3px 6px #000;
     }
     .login-container, .account-container {
       background-color: #ece9d8;
@@ -41,6 +42,7 @@
       padding: 20px 30px;
       width: 320px;
       text-align: center;
+      z-index: 10;
     }
     .password-box, .field input {
       background-color: #fff;
@@ -54,7 +56,7 @@
     .prompt {
       font-size: 12px;
       color: #000;
-      margin-top: 6px;
+      margin: 20px 0;
     }
     .xp-button {
       background: linear-gradient(to bottom, #f6f6f6 0%, #d9d9d9 100%);
@@ -75,7 +77,7 @@
       color: #000;
       margin-top: 10px;
     }
-    #account-screen {
+    #account-screen, #studentid-login-screen {
       display: none;
       position: fixed;
       inset: 0;
@@ -92,70 +94,6 @@
       gap: 10px;
       margin-top: 16px;
     }
-    .button-row button {
-      flex: 1;
-    }
-    #terminal-screen {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-      font-family: "Courier New", monospace;
-    }
-    .terminal-window {
-      width: 95%;
-      height: 85vh;
-      background: #000;
-      border: 2px solid #000;
-      box-shadow: 5px 5px 15px #000;
-      display: flex;
-      flex-direction: column;
-    }
-    .terminal-header {
-      background: linear-gradient(to bottom, #004e98, #003873);
-      color: #fff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 10px;
-      font-size: 14px;
-    }
-    .terminal-title { font-weight: bold; }
-    .terminal-controls button {
-      background: #c0c0c0;
-      border: 1px solid #888;
-      font-weight: bold;
-      font-size: 12px;
-      width: 24px;
-      height: 20px;
-      margin-left: 4px;
-      pointer-events: none;
-    }
-    #terminal-output-wrapper {
-      padding: 20px;
-      white-space: pre-wrap;
-      font-size: 15px;
-      line-height: 1.5;
-      color: #fff;
-      flex-grow: 1;
-      overflow-y: auto;
-      position: relative;
-    }
-    #terminal-cursor {
-      display: inline-block;
-      width: 10px;
-      height: 16px;
-      background: #fff;
-      margin-left: 2px;
-      animation: blink 1s steps(2, start) infinite;
-    }
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      51%, 100% { opacity: 0; }
-    }
     canvas#glitch-canvas {
       position: fixed;
       inset: 0;
@@ -163,32 +101,154 @@
       z-index: 9998;
       background: black;
     }
-
-    /* Mobile Styles */
-    @media (max-width: 600px) {
-      .login-container, .account-container {
-        width: 90%;
-        padding: 16px;
-      }
-
-      .terminal-window {
-        width: 98%;
-        height: 80vh;
-        font-size: 13px;
-      }
-
-      #terminal-output-wrapper {
-        padding: 14px;
-        font-size: 13px;
-      }
-
-      #time {
-        font-size: 36px;
-      }
-
-      #date {
-        font-size: 16px;
-      }
+    #terminal-screen {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      font-family: "Courier New", monospace;
+      transition: transform 0.6s ease-in-out, opacity 0.4s ease;
+      transform-origin: top center;
+    }
+    .terminal-window {
+      width: 95%;
+      height: 85vh;
+      background: #000;
+      border: 2px solid #000;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 5px 5px 15px #000;
+    }
+    .terminal-header {
+      background: linear-gradient(to bottom, #004e98, #003873);
+      color: #fff;
+      padding: 6px 10px;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+    }
+    #terminal-output-wrapper {
+      padding: 20px;
+      color: white;
+      font-size: 15px;
+      white-space: pre-wrap;
+      overflow-y: auto;
+      flex-grow: 1;
+      position: relative;
+    }
+    #terminal-cursor {
+      display: inline-block;
+      width: 10px;
+      height: 16px;
+      background: white;
+      margin-left: 2px;
+      animation: blink 1s steps(2, start) infinite;
+    }
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+    #xp-browser {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: url('https://i.imgur.com/9sQvmTz.png') center/cover no-repeat fixed;
+      z-index: 10000;
+      animation: xpLaunch 0.8s ease forwards;
+      transform-origin: bottom left;
+      overflow-y: auto;
+    }
+    @keyframes xpLaunch {
+      0% { opacity: 0; transform: scale(0.2) translateY(100px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .xp-window {
+      width: 96%;
+      height: 96%;
+      margin: auto;
+      margin-top: 1%;
+      display: flex;
+      flex-direction: column;
+      background-color: white;
+      border: 2px solid #000080;
+      box-shadow: 4px 4px 12px rgba(0,0,0,0.5);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .xp-titlebar {
+      background: linear-gradient(to right, #000080, #3399ff);
+      color: white;
+      padding: 6px 12px;
+      font-weight: bold;
+      font-size: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Tahoma', sans-serif;
+    }
+    .xp-controls {
+      display: flex;
+      gap: 2px;
+    }
+    .xp-controls div {
+      width: 16px;
+      height: 16px;
+      background-color: #c0c0c0;
+      border: 1px solid #808080;
+      text-align: center;
+      font-size: 12px;
+      line-height: 16px;
+      font-family: monospace;
+    }
+    .xp-controls .close {
+      background-color: red;
+      color: white;
+      border: 1px solid darkred;
+    }
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;
+      gap: 20px;
+      padding: 20px;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+    .sidebar, .content {
+      background: rgba(255,255,255,0.95);
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+    .sidebar img, .content img {
+      width: 100%;
+      border: 1px solid black;
+      margin-bottom: 10px;
+    }
+    nav {
+      background: #f0f0f0;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+    }
+    nav a {
+      color: blue;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    header h1 {
+      text-align: center;
+      font-size: 48px;
+      color: #0000cc;
+      text-shadow: 2px 2px black;
+      padding: 20px;
+      background: white;
+      border-bottom: 1px solid #ccc;
     }
   </style>
 </head>
@@ -208,18 +268,35 @@
 
   <div id="account-screen">
     <div class="account-container">
-      <h3>Create a Student Account</h3>
+      <h3>Create User Account</h3>
       <div class="field">
         <label>Full Name:</label>
-        <input id="fullName" type="text" placeholder="e.g., Matthew Stout">
+        <input id="fullName" type="text" placeholder="e.g. Thunder">
       </div>
       <div class="field">
         <label>Student ID Number:</label>
-        <input id="studentId" type="text" placeholder="e.g., 123456789">
+        <input id="studentId" type="text" placeholder="e.g. 20931722">
       </div>
       <div class="button-row">
         <button class="xp-button" onclick="goBack()">Back</button>
         <button class="xp-button" onclick="handleAccountContinue()">Continue</button>
+      </div>
+      <div style="margin-top: 20px;">
+        <button class="xp-button" onclick="handleStudentIdLogin()">Log in with Student ID Number</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="studentid-login-screen">
+    <div class="account-container">
+      <h3>Log In with Student ID</h3>
+      <div class="field">
+        <label>Student ID Number:</label>
+        <input id="loginStudentId" type="text" placeholder="e.g. 20931722">
+      </div>
+      <div class="button-row">
+        <button class="xp-button" onclick="goBackToCreateUser()">Back</button>
+        <button class="xp-button" onclick="submitStudentIdLogin()">OK</button>
       </div>
     </div>
   </div>
@@ -241,121 +318,180 @@
     </div>
   </div>
 
-  <script>
-    function updateTime() {
-      const d = new Date();
-      const h = d.getHours() % 12 || 12;
-      const m = d.getMinutes().toString().padStart(2, '0');
-      document.getElementById('time').textContent = `${h}:${m}`;
-      document.getElementById('date').textContent = d.toLocaleDateString('en-US', {
-        weekday: 'long', month: 'long', day: 'numeric'
-      });
-    }
-    updateTime();
-    setInterval(updateTime, 1000);
+  <div id="xp-browser">
+    <div class="xp-window">
+      <div class="xp-titlebar">
+        <span>The Wild Hunt - Microsoft Internet Explorer</span>
+        <div class="xp-controls">
+          <div>-</div>
+          <div>▢</div>
+          <div class="close">X</div>
+        </div>
+      </div>
+      <header>
+        <h1>The Wild Hunt</h1>
+      </header>
+      <nav>
+        <a href="#">HOME</a>
+        <a href="#">CLUES</a>
+        <a href="#">EMERGENCY LOG</a>
+      </nav>
+      <div class="main-content">
+        <div class="sidebar">
+          <img src="https://i.imgur.com/3AkcbQS.jpg" alt="CCTV" />
+          <a href="#">20931722 last seen near Esports</a>
+        </div>
+        <div class="content">
+          <img src="https://i.imgur.com/VjFDq1V.png" />
+          <h2>UNEXPLAINED DISAPPEARANCES CONTINUE</h2>
+          <strong>Prescott Field vending machine dispensed a drink labeled “STAMPEDE — Pine Mist”.</strong>
+          <p>Logs reference ID “20931722”. Recovered fragments say “THE WILD HUNT IS NOT A GAME.”</p>
+          <p>Matthew Stout was spotted near Theology Commons. CCTV showed a faint antelope skull.</p>
+          <p>Do not touch the red padlock near Esports. It appears active and dangerous.</p>
+        </div>
+        <div class="sidebar">
+          <img src="https://i.imgur.com/3AkcbQS.jpg" />
+          <a href="#">“THEY’RE IN THE TREE” — final clue recovered</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    function handleLogin() {
-      const pass = document.getElementById('passwordInput').value.trim().toLowerCase();
-      if (pass === 'matthew') {
-        document.getElementById('login-container').style.display = 'none';
-        document.getElementById('account-screen').style.display = 'flex';
-      } else {
-        alert('Incorrect password.');
+  <!-- Insert full <script> from previous message here -->
+</body>
+</html>
+<script>
+  let registeredName = 'Thunder'; // Default name
+  let isAdmin = false; // Admin mode flag
+
+  function updateTime() {
+    const d = new Date();
+    const h = d.getHours() % 12 || 12;
+    const m = d.getMinutes().toString().padStart(2, '0');
+    document.getElementById('time').textContent = `${h}:${m}`;
+    document.getElementById('date').textContent = d.toLocaleDateString('en-US', {
+      weekday: 'long', month: 'long', day: 'numeric'
+    });
+  }
+  updateTime();
+  setInterval(updateTime, 1000);
+
+  function handleLogin() {
+    const pass = document.getElementById('passwordInput').value.trim().toLowerCase();
+    if (pass === 'matthew') {
+      document.getElementById('login-container').style.display = 'none';
+      document.getElementById('account-screen').style.display = 'flex';
+    } else if (pass === 'cabmkting2025') {
+      isAdmin = true;
+      document.getElementById('login-container').style.display = 'none';
+      document.getElementById('xp-browser').style.display = 'block';
+      showAdminTag();
+    } else {
+      alert('Incorrect password.');
+    }
+  }
+
+  function goBack() {
+    document.getElementById('account-screen').style.display = 'none';
+    document.getElementById('login-container').style.display = 'flex';
+  }
+
+  function handleStudentIdLogin() {
+    document.getElementById('account-screen').style.display = 'none';
+    document.getElementById('studentid-login-screen').style.display = 'flex';
+  }
+
+  function goBackToCreateUser() {
+    document.getElementById('studentid-login-screen').style.display = 'none';
+    document.getElementById('account-screen').style.display = 'flex';
+  }
+
+  function handleAccountContinue() {
+    const name = document.getElementById('fullName').value.trim();
+    const id = document.getElementById('studentId').value.trim();
+    if (!id) {
+      alert('Please fill in your Student ID Number.');
+      return;
+    }
+    registeredName = name || 'Thunder';
+    glitchCrash();
+  }
+
+  function submitStudentIdLogin() {
+    const id = document.getElementById('loginStudentId').value.trim();
+    if (!id) {
+      alert('Please enter your Student ID Number.');
+      return;
+    }
+    registeredName = 'Thunder';
+    glitchCrash();
+  }
+
+  function glitchCrash() {
+    const canvas = document.getElementById('glitch-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = document.documentElement.clientWidth;
+    canvas.height = document.documentElement.clientHeight;
+    canvas.style.display = 'block';
+
+    let frames = 0;
+    const glitchInterval = setInterval(() => {
+      const imgData = ctx.createImageData(canvas.width, canvas.height);
+      for (let i = 0; i < imgData.data.length; i += 4) {
+        imgData.data[i] = Math.random() * 255;
+        imgData.data[i + 1] = Math.random() * 255;
+        imgData.data[i + 2] = Math.random() * 255;
+        imgData.data[i + 3] = Math.random() < 0.8 ? 80 : 255;
       }
-    }
-
-    function goBack() {
-      document.getElementById('account-screen').style.display = 'none';
-      document.getElementById('login-container').style.display = 'flex';
-    }
-
-    function handleAccountContinue() {
-      const name = document.getElementById('fullName').value.trim();
-      const id = document.getElementById('studentId').value.trim();
-      if (!name || !id) {
-        alert('Please fill in both fields.');
-        return;
+      ctx.putImageData(imgData, 0, 0);
+      if (++frames > 8) {
+        clearInterval(glitchInterval);
+        canvas.style.display = 'none';
+        showCrashScreen();
       }
-      glitchCrash();
-    }
+    }, 100);
+  }
 
-    function glitchCrash() {
-      const canvas = document.getElementById('glitch-canvas');
-      const ctx = canvas.getContext('2d');
-      canvas.width = document.documentElement.clientWidth;
-      canvas.height = document.documentElement.clientHeight;
-      canvas.style.display = 'block';
+  function showCrashScreen() {
+    document.getElementById('login-container').style.display = 'none';
+    document.getElementById('account-screen').style.display = 'none';
+    document.getElementById('studentid-login-screen').style.display = 'none';
 
-      let frames = 0;
-      const maxFrames = 8;
-      const glitchInterval = setInterval(() => {
-        const imgData = ctx.createImageData(canvas.width, canvas.height);
-        for (let i = 0; i < imgData.data.length; i += 4) {
-          const val = Math.random() * 255;
-          imgData.data[i] = val;
-          imgData.data[i + 1] = Math.random() * 255;
-          imgData.data[i + 2] = Math.random() * 255;
-          imgData.data[i + 3] = Math.random() < 0.8 ? 80 : 255;
-        }
-        ctx.putImageData(imgData, 0, 0);
-        frames++;
-        if (frames > maxFrames) {
-          clearInterval(glitchInterval);
-          canvas.style.display = 'none';
-          showCrashScreen();
-        }
-      }, 100);
-    }
-
-    function showCrashScreen() {
-      const crash = document.createElement('div');
-      crash.style.position = 'fixed';
-      crash.style.inset = '0';
-      crash.style.background = '#0000aa';
-      crash.style.color = '#fff';
-      crash.style.fontFamily = 'Courier New, monospace';
-      crash.style.fontSize = '16px';
-      crash.style.padding = '60px';
-      crash.style.lineHeight = '1.5';
-      crash.style.zIndex = '9999';
-      crash.innerText = `A fatal exception 0x000000E has occurred at 0x0028:C0011E36 in VXD VMM(01) + 00010E36.
+    const crash = document.createElement('div');
+    crash.style = 'position:fixed;inset:0;background:#0000aa;color:#fff;padding:60px;font-family:Courier;font-size:16px;z-index:9999';
+    crash.innerText = `A fatal exception 0x000000E has occurred at 0x0028:C0011E36 in VXD VMM(01) + 00010E36.
 The current application will be terminated.
 
 SYSTEM FLAG: FIND MATTHEW IN THE BASEMENT
-DO NOT IGNORE THIS MESSAGE. THIS IS NOT A DRILL.
 
-*  Press any key to continue
-*  Press CTRL+ALT+DEL to restart your computer. You will lose any unsaved information in all applications.
+* Press any key to continue`;
+    document.body.appendChild(crash);
+    setTimeout(() => {
+      crash.remove();
+      document.getElementById('terminal-screen').style.display = 'flex';
+      typeNarrative();
+    }, 2500);
+  }
 
-Press any key to continue _`;
+  function typeNarrative() {
+    const out = document.getElementById('terminal-output');
+    const wrapper = document.getElementById('terminal-output-wrapper');
+    const cursor = document.createElement('div');
+    cursor.id = 'terminal-cursor';
+    out.textContent = '';
 
-      document.body.appendChild(crash);
-      setTimeout(() => {
-        crash.remove();
-        document.getElementById('terminal-screen').style.display = 'flex';
-        typeOriginalNarrative();
-      }, 2600);
-    }
-
-    function typeOriginalNarrative() {
-      const out = document.getElementById('terminal-output');
-      const wrapper = document.getElementById('terminal-output-wrapper');
-      const cursor = document.createElement('div');
-      cursor.id = 'terminal-cursor';
-      out.textContent = '';
-
-      const text = `\nHello, Matthew.
+    const text = `Hello, ${registeredName}.
 You have accessed the emergency log of Matthew Stout.
 
-  ▸  13 days ago, Matt and four friends hiked the south rim of the Grand Canyon.
-  ▸  They found an antelope skull. Someone joked it “looked cursed.”
-  ▸  That night the first student vanished. Then the second. No footprints. No struggle.
+▸  13 days ago, Matt and four friends hiked the south rim of the Grand Canyon.
+▸  They found an antelope skull. Someone joked it “looked cursed.”
+▸  That night the first student vanished. Then the second. No footprints. No struggle.
 
 I started filming everything—hoping the camera might catch
 whatever stalks us. The tapes show shapes in the dark… and our failed escapes.
 
-  ▸  We call it **The Wild Hunt**. Once it marks you, you run—or you hang…
-     “Absalom was hung on one of these—there was no grace for him.”
+▸  We call it THE WILD HUNT. Once it marks you, you run—or you hang…
+   “Absalom was hung on one of these—there was no grace for him.”
 
 Last recording from the dorm basement ended with Matt yelling:
 “And that was the last we saw of 20931722…”
@@ -364,81 +500,57 @@ Only clues remain—scratched on walls, hidden in videos, carved into desks.
 Find them, survive longer than we did, and maybe pull Matt back
 from that back-rooms campus the Hunt uses as a cage.
 
-STAMPEDE VENDING NOTE – someone said a *new flavor* is hidden
-down there—maybe it lures students in.
+If you could read this, please help me find my friends.\n`;
 
-Two fruits of the Spirit are missing here. WHERE ARE THEY?
-
-If you could read this, please help me find my friends.
-`;
-
-      const scrambleChars = ['@', '#', '%', '&', '*', '+', '~', '?'];
-      let i = 0;
-
-      function scrambleAndPrint(str, callback) {
-        let j = 0;
-        function nextChar() {
-          if (j < str.length) {
-            const span = document.createElement('span');
-            out.appendChild(span);
-            let scrambleFrame = 0;
-            const interval = setInterval(() => {
-              if (scrambleFrame < 6) {
-                span.textContent = scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
-                scrambleFrame++;
-              } else {
-                clearInterval(interval);
-                span.textContent = str[j++];
-                setTimeout(nextChar, 60);
-              }
-            }, 35);
-          } else {
-            setTimeout(callback, 400);
-          }
-        }
-        nextChar();
-      }
-
-      function type() {
-        if (i < text.length) {
-          const target = text.slice(i);
-
-          if (target.startsWith('**The Wild Hunt**')) {
-            scrambleAndPrint('**The Wild Hunt**', () => {
-              i += 16;
-              appendCursor();
-              setTimeout(type, 100);
-            });
-            return;
-          }
-
-          if (target.startsWith('20931722')) {
-            scrambleAndPrint('20931722', () => {
-              i += 8;
-              appendCursor();
-              setTimeout(type, 100);
-            });
-            return;
-          }
-
-          out.appendChild(document.createTextNode(text[i++]));
-          appendCursor();
-          setTimeout(type, 40);
-        } else {
-          out.appendChild(document.createTextNode('\nC:\\WildHunt\\>'));
-          appendCursor();
-        }
-      }
-
-      function appendCursor() {
-        const existingCursor = document.getElementById('terminal-cursor');
-        if (existingCursor) existingCursor.remove();
-        out.appendChild(cursor);
-        wrapper.scrollTop = wrapper.scrollHeight;
-      }
-
-      type();
+    let i = 0;
+    function appendCursor() {
+      const old = document.getElementById('terminal-cursor');
+      if (old) old.remove();
+      out.appendChild(cursor);
+      wrapper.scrollTop = wrapper.scrollHeight;
     }
-  </script>
-</body>
-</html>
+
+    function type() {
+      if (i < text.length) {
+        out.appendChild(document.createTextNode(text[i++]));
+        appendCursor();
+        setTimeout(type, 30);
+      } else {
+        out.appendChild(document.createTextNode('\nC:\\WildHunt\\>'));
+        appendCursor();
+        setTimeout(minimizeAndLaunchXPBrowser, 1500);
+      }
+    }
+
+    type();
+  }
+
+  function minimizeAndLaunchXPBrowser() {
+    const terminal = document.getElementById('terminal-screen');
+    terminal.style.transform = 'scale(0.1) translateY(100vh)';
+    terminal.style.opacity = '0';
+    setTimeout(() => {
+      terminal.style.display = 'none';
+      document.getElementById('xp-browser').style.display = 'block';
+      if (isAdmin) showAdminTag();
+    }, 700);
+  }
+
+  function showAdminTag() {
+    const adminTag = document.createElement('div');
+    adminTag.textContent = "<admin mode>";
+    adminTag.style = `
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: red;
+      font-weight: bold;
+      font-family: monospace;
+      background: white;
+      padding: 4px 8px;
+      border: 1px solid red;
+      z-index: 10001;
+    `;
+    document.getElementById('xp-browser').appendChild(adminTag);
+  }
+</script>
